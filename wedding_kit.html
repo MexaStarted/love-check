@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<!--
+=================================================================
+  結婚準備 まるごとチェックリスト＆予算シミュレーター（特典）
+  時期別やることチェック / 進捗の見える化 / ざっくり予算計算 / メモ。
+  【配布】GitHub Pages等に置きURLを記事に貼る or ファイル配布。自動保存・リセット可。
+  ※費用は平均をもとにした目安です（ゼクシィ結婚トレンド調査2024等を参考）。実額は会場・地域で変わります。
+=================================================================
+-->
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>結婚準備 チェックリスト＆予算シミュレーター</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Shippori+Mincho:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#fbf7f4;--bg2:#f3eee9;--ink:#4a3a34;--muted:#9a8a82;
+    --rose:#cf8b75;--rose2:#e0a594;--gold:#c2a06a;--green:#6fae84;--line:#ecdcd4;
+    --panel:#fff;
+    --display:'Shippori Mincho',serif;--body:'Zen Maru Gothic',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--body);color:var(--ink);min-height:100vh;line-height:1.85;background:linear-gradient(165deg,#fbf7f4,#f3eee9 60%,#eee6e1)}
+  .glow{position:fixed;border-radius:50%;filter:blur(70px);opacity:.45;z-index:0;pointer-events:none;background:radial-gradient(circle,#f0cdbc,transparent 70%)}
+  .wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:0 18px 70px}
+  header{text-align:center;padding:54px 0 12px}
+  .eyebrow{font-size:.72rem;letter-spacing:.3em;color:var(--gold);margin-bottom:12px}
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(1.7rem,5.4vw,2.4rem);line-height:1.34;color:#5a463e}
+  .lead{color:var(--muted);margin:14px auto 0;max-width:48ch;font-size:.96rem}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px 20px;margin:20px 0;box-shadow:0 20px 50px -34px rgba(120,80,60,.4)}
+  h2{font-family:var(--display);font-weight:700;font-size:1.2rem;margin-bottom:6px;display:flex;align-items:center;gap:10px;color:#5a463e}
+  h2 .d{width:8px;height:8px;border-radius:50%;background:var(--rose);box-shadow:0 0 10px var(--rose2)}
+  .note{color:var(--muted);font-size:.84rem;margin-bottom:14px}
+  .prog{height:12px;border-radius:99px;background:#f0e6e0;overflow:hidden;margin:6px 0 4px}
+  .progf{height:100%;width:0;background:linear-gradient(90deg,var(--rose2),var(--gold));transition:width .6s ease}
+  .progtxt{text-align:right;font-size:.8rem;color:var(--muted)}
+  .phase{margin-top:16px}
+  .phead{font-family:var(--display);font-size:1rem;color:var(--rose);font-weight:700;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+  .check{display:flex;align-items:flex-start;gap:11px;cursor:pointer;user-select:none;padding:8px 6px;border-radius:9px;transition:.15s}
+  .check:hover{background:#faf2ee}
+  .cbox{flex:0 0 auto;width:21px;height:21px;border-radius:6px;border:2px solid #d3b3a8;display:grid;place-items:center;margin-top:3px;transition:.2s}
+  .check.done .cbox{background:var(--green);border-color:var(--green)}
+  .cbox svg{width:12px;height:12px;opacity:0}.check.done .cbox svg{opacity:1}
+  .check .t{flex:1;font-size:.95rem}.check.done .t{color:var(--muted);text-decoration:line-through}
+  .calc label{display:block;font-size:.84rem;color:var(--muted);margin:12px 0 5px}
+  .calc input,.calc select{width:100%;background:#fffdfc;border:1px solid var(--line);border-radius:10px;color:var(--ink);font-family:var(--body);font-size:.96rem;padding:11px 13px}
+  .calc input:focus{outline:none;border-color:var(--rose)}
+  .calcout{background:#fbf0ec;border:1px solid #efd9d1;border-radius:12px;padding:16px;margin-top:14px}
+  .calcrow{display:flex;justify-content:space-between;font-size:.92rem;margin:5px 0}
+  .calcrow.big{font-size:1.1rem;font-weight:700;color:var(--rose);border-top:1px solid #efd9d1;padding-top:8px;margin-top:8px}
+  .calcnote{font-size:.78rem;color:#bcaaa0;margin-top:8px}
+  textarea{width:100%;background:#fffdfc;border:1px solid var(--line);border-radius:12px;color:var(--ink);font-family:var(--body);font-size:.95rem;padding:12px 14px;resize:vertical;min-height:70px}
+  textarea:focus{outline:none;border-color:var(--rose)}
+  .reset{margin-top:14px;background:transparent;border:1px solid var(--line);color:var(--muted);padding:9px 20px;border-radius:999px;font-size:.84rem;cursor:pointer}
+  .reset:hover{background:#f3eee9}
+  footer{text-align:center;color:var(--muted);font-size:.8rem;padding:10px 10px 40px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="glow" style="width:340px;height:340px;top:6%;right:-60px"></div>
+<div class="glow" style="width:300px;height:300px;top:70%;left:-70px"></div>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">WEDDING PREP KIT</div>
+    <h1>結婚準備 まるごと<br>チェックリスト</h1>
+    <p class="lead">時期別の「やること」をチェックして進捗を見える化。ざっくり予算もシミュレーションできます。ふたりで使ってね。</p>
+  </header>
+
+  <section class="card">
+    <h2><span class="d"></span>準備の進捗</h2>
+    <div class="prog"><div class="progf" id="progf"></div></div>
+    <div class="progtxt" id="progtxt">0 / 0 完了</div>
+    <div id="phases"></div>
+  </section>
+
+  <section class="card calc">
+    <h2><span class="d"></span>ざっくり予算シミュレーター</h2>
+    <p class="note">ゲスト人数を入れると、平均額をもとに「総額」と「ご祝儀を引いた自己負担のおおよそ」を計算します。あくまで目安です。</p>
+    <label>招待するゲストの人数（目安）</label>
+    <input type="number" id="guests" value="52" min="0" max="300">
+    <label>1人あたりの結婚式費用（円・標準は約66,000円）</label>
+    <input type="number" id="perguest" value="66000" min="0" step="1000">
+    <label>固定費（衣装・写真・会場費など人数で変わらない分の目安・円）</label>
+    <input type="number" id="fixed" value="1200000" min="0" step="50000">
+    <label>1人あたりのご祝儀の目安（友人3万・上司4.2万・親族7.6万など。平均的に3万円）</label>
+    <input type="number" id="goshugi" value="30000" min="0" step="1000">
+    <div class="calcout">
+      <div class="calcrow"><span>結婚式 総額のおおよそ</span><span id="total">-</span></div>
+      <div class="calcrow"><span>ご祝儀の合計（目安）</span><span id="gtotal">-</span></div>
+      <div class="calcrow big"><span>自己負担のおおよそ</span><span id="self">-</span></div>
+      <div class="calcnote">※ゼクシィ結婚トレンド調査2024等の平均を参考にした概算です。実際は会場・地域・内容で大きく変わります。正確な金額は式場の見積もりで確認してください。親からの援助がある場合、自己負担はさらに下がることがあります。</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2><span class="d"></span>ふたりのメモ</h2>
+    <p class="note">やりたいこと、決めたこと、保留中のことなど。（自動保存）</p>
+    <textarea id="memo" placeholder="例: 会場は2件見学して決める / 親への挨拶は来月 / 予算の上限は◯◯万円"></textarea>
+    <div style="text-align:center"><button class="reset" id="reset">入力をすべてリセット</button></div>
+  </section>
+
+  <footer>※費用は平均をもとにした目安です。最終的な金額・段取りは、式場やプランナーに確認しながら進めてください。</footer>
+</div>
+<script>
+const PHASES=[
+ ["💍 結婚が決まったら（〜12ヶ月前）",[
+   "両家への挨拶・結婚の報告","両親への顔合わせ／結納をするか相談","ふたりの希望（時期・規模・予算）をすり合わせ","ざっくりの予算を決める","式を挙げるか・スタイル（披露宴/会食/フォト等）を話し合う"]],
+ ["🏛 式場さがし（12〜9ヶ月前）",[
+   "ブライダルフェアに参加（複数）","見積もりを複数の式場で比較","会場を決定・予約（人気日は早めに）","日取りを決める"]],
+ ["📝 内容を固める（9〜6ヶ月前）",[
+   "ゲストの候補をリストアップ","招待人数をおおよそ確定","衣装（ドレス・タキシード等）を検討開始","指輪を検討・購入"]],
+ ["🎀 具体的な準備（6〜4ヶ月前）",[
+   "演出・進行のイメージを決める","ドレス・衣装を決定","前撮りを検討・予約","ヘアメイクのリハーサル相談"]],
+ ["✉️ ペーパー・手配（4〜3ヶ月前）",[
+   "招待状の作成","招待状の発送（2〜3ヶ月前が目安）","結婚式ムービーの準備","二次会の検討（やる場合）"]],
+ ["📋 仕上げ（3〜1ヶ月前）",[
+   "出欠をもとにゲスト確定","席次表・席札の作成","料理・引出物の最終数量を決定","花嫁の手紙・スピーチの準備","支払い（残金）の準備・確認"]],
+ ["🌸 直前〜当日（1ヶ月前〜）",[
+   "最終打ち合わせ・リハーサル","持ち物・当日の流れを確認","関係者への連絡先・段取り共有","当日：思いきり楽しむ！"]],
+];
+const KEY="wedding_kit_v1";
+let st=load();
+function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{checks:{},memo:"",calc:{}};}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+
+const phasesEl=document.getElementById('phases');
+function render(){
+  phasesEl.innerHTML='';let total=0,done=0;
+  PHASES.forEach((ph,pi)=>{
+    const wrap=document.createElement('div');wrap.className='phase';
+    const head=document.createElement('div');head.className='phead';head.textContent=ph[0];wrap.appendChild(head);
+    ph[1].forEach((task,ti)=>{
+      const key=pi+'_'+ti;const on=!!st.checks[key];total++;if(on)done++;
+      const div=document.createElement('div');div.className='check'+(on?' done':'');
+      div.innerHTML=`<div class="cbox"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="t">${task}</div>`;
+      div.onclick=()=>{st.checks[key]=!st.checks[key];if(!st.checks[key])delete st.checks[key];save();render();};
+      wrap.appendChild(div);
+    });
+    phasesEl.appendChild(wrap);
+  });
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById('progf').style.width=pct+'%';
+  document.getElementById('progtxt').textContent=`${done} / ${total} 完了（${pct}%）`;
+}
+
+const yen=n=>"¥"+Math.round(n).toLocaleString('ja-JP');
+const ids=["guests","perguest","fixed","goshugi"];
+ids.forEach(id=>{const el=document.getElementById(id);if(st.calc&&st.calc[id]!=null)el.value=st.calc[id];el.addEventListener('input',()=>{st.calc=st.calc||{};st.calc[id]=el.value;save();calc();});});
+function calc(){
+  const g=+document.getElementById('guests').value||0;
+  const pg=+document.getElementById('perguest').value||0;
+  const fx=+document.getElementById('fixed').value||0;
+  const go=+document.getElementById('goshugi').value||0;
+  const total=g*pg+fx;
+  const gt=g*go;
+  const self=Math.max(0,total-gt);
+  document.getElementById('total').textContent=yen(total);
+  document.getElementById('gtotal').textContent=yen(gt);
+  document.getElementById('self').textContent=yen(self);
+}
+
+const memo=document.getElementById('memo');memo.value=st.memo||"";
+memo.addEventListener('input',()=>{st.memo=memo.value;save();});
+document.getElementById('reset').onclick=()=>{if(confirm('チェック・予算・メモをすべてリセットします。よろしいですか?')){st={checks:{},memo:"",calc:{}};save();
+  document.getElementById('guests').value=52;document.getElementById('perguest').value=66000;document.getElementById('fixed').value=1200000;document.getElementById('goshugi').value=30000;
+  memo.value="";render();calc();}};
+render();calc();
+</script>
+</body>
+</html>
