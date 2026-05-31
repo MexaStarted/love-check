@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<!--
+=================================================================
+  精神年齢タイプ別 セルフケアキット（特典）
+  診断で出た「タイプ」を選ぶ → 心のバランスを整える習慣チェック＆ログ。
+  【配布】GitHub Pages等に置きURLを記事に貼る or ファイル配布。自動保存・リセット可。
+  ※遊びの診断に基づく前向きなセルフケア補助です。優劣を測るものではありません。
+=================================================================
+-->
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>精神年齢タイプ別 セルフケアキット</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Shippori+Mincho:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#1a1535;--bg2:#241a4a;--bg3:#0e0a22;--ink:#f0ecff;--muted:#b3a9d6;
+    --p1:#8b7bff;--p2:#b59cff;--cyan:#54e6e0;--gold:#ffd56b;--green:#7be0a3;
+    --panel:rgba(48,38,92,.5);--panel-br:rgba(160,140,255,.24);
+    --display:'Shippori Mincho',serif;--body:'Zen Maru Gothic',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--body);color:var(--ink);min-height:100vh;overflow-x:hidden;line-height:1.8;background:linear-gradient(160deg,#1a1535,#241a4a 48%,#0e0a22)}
+  #stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .glow{position:fixed;border-radius:50%;filter:blur(60px);opacity:.4;z-index:0;pointer-events:none;background:radial-gradient(circle,var(--p1),transparent 70%);animation:f 26s ease-in-out infinite}
+  .glow.b{background:radial-gradient(circle,var(--cyan),transparent 70%);animation-duration:32s}
+  @keyframes f{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-40px)}}
+  .wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:0 18px 70px}
+  header{text-align:center;padding:56px 0 14px}
+  .eyebrow{font-size:.72rem;letter-spacing:.3em;color:var(--p2);margin-bottom:12px}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(1.7rem,5.6vw,2.5rem);line-height:1.34;text-shadow:0 0 28px rgba(139,123,255,.4)}
+  .lead{color:var(--muted);margin:14px auto 0;max-width:46ch;font-size:.98rem}
+  .card{background:var(--panel);border:1px solid var(--panel-br);border-radius:20px;padding:26px 22px;margin:22px 0;backdrop-filter:blur(8px);box-shadow:0 24px 70px -34px rgba(0,0,0,.7)}
+  h2{font-family:var(--display);font-weight:800;font-size:1.3rem;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+  h2 .d{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+  .note{color:var(--muted);font-size:.85rem;margin-bottom:16px}
+  .hidden{display:none}
+  .picker{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
+  .pick{background:rgba(255,255,255,.06);border:1px solid var(--panel-br);border-radius:13px;padding:12px 6px;text-align:center;cursor:pointer;transition:.18s}
+  .pick:hover{background:rgba(139,123,255,.18);transform:translateY(-2px)}
+  .pick.sel{background:rgba(139,123,255,.3);border-color:var(--p1)}
+  .pick .e{font-size:1.6rem}.pick .n{font-size:.74rem;color:var(--muted);margin-top:3px;line-height:1.3}
+  .change{background:transparent;border:none;color:var(--p2);cursor:pointer;font-size:.86rem;text-decoration:underline}
+  .me{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .me .big{font-size:3.2rem}.me .name{font-family:var(--display);font-size:1.6rem;color:var(--p2)}
+  .row2{background:rgba(255,255,255,.05);border:1px solid var(--panel-br);border-radius:12px;padding:13px 15px;margin:10px 0}
+  .row2 h3{font-family:var(--display);font-size:1rem;color:var(--p2);margin-bottom:4px}
+  .checks{display:grid;gap:9px}
+  .check{display:flex;align-items:flex-start;gap:12px;cursor:pointer;user-select:none;background:rgba(255,255,255,.05);border:1px solid var(--panel-br);border-radius:12px;padding:12px 14px;transition:.2s}
+  .check:hover{background:rgba(139,123,255,.14)}
+  .check.done{background:rgba(123,224,163,.12);border-color:rgba(123,224,163,.4)}
+  .cbox{flex:0 0 auto;width:22px;height:22px;border-radius:6px;border:2px solid #7a6cb0;display:grid;place-items:center;margin-top:2px;transition:.2s}
+  .check.done .cbox{background:var(--green);border-color:var(--green)}
+  .cbox svg{width:12px;height:12px;opacity:0;transition:.2s}.check.done .cbox svg{opacity:1}
+  .check .t{flex:1;font-size:.96rem}.check.done .t{color:var(--muted)}
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+  label{font-size:.78rem;color:var(--muted)}
+  input,textarea{background:rgba(14,10,34,.6);border:1px solid var(--panel-br);border-radius:10px;color:var(--ink);font-family:var(--body);font-size:.95rem;padding:10px 12px;width:100%}
+  input:focus,textarea:focus{outline:none;border-color:var(--p1)}
+  textarea{resize:vertical;min-height:56px}
+  .save-btn{font-family:var(--body);font-weight:700;color:#1a1535;background:linear-gradient(135deg,var(--p2),var(--cyan));border:none;border-radius:999px;padding:11px 28px;cursor:pointer;transition:.25s;margin-top:6px}
+  .save-btn:hover{transform:translateY(-2px);filter:brightness(1.07)}
+  .flash{color:var(--gold);font-size:.82rem;opacity:0;transition:.3s;margin-left:12px}.flash.show{opacity:1}
+  .logs{margin-top:14px;display:grid;gap:9px}
+  .logitem{background:rgba(255,255,255,.05);border:1px solid var(--panel-br);border-left:3px solid var(--cyan);border-radius:11px;padding:11px 14px;font-size:.88rem;display:flex;gap:12px;flex-wrap:wrap;align-items:baseline}
+  .logitem .d{font-family:monospace;color:var(--cyan);font-size:.78rem}.logitem .m{color:var(--muted);flex:1;min-width:150px}
+  .del{margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem}.del:hover{color:var(--p2)}
+  .reset{margin-top:8px;background:transparent;border:1px solid var(--panel-br);color:var(--muted);padding:9px 20px;border-radius:999px;font-size:.84rem;cursor:pointer}
+  .reset:hover{background:rgba(255,255,255,.08)}
+  footer{text-align:center;color:var(--muted);font-size:.82rem;padding:8px 10px 50px;line-height:1.8}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div class="glow" style="width:300px;height:300px;top:8%;left:-70px"></div>
+<div class="glow b" style="width:320px;height:320px;top:62%;right:-80px"></div>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">MENTAL AGE SELF-CARE</div>
+    <h1>精神年齢タイプ別<br>心のバランス・キット</h1>
+    <p class="lead">診断で出た「あなたのタイプ」を選ぶと、心を健やかに保つ習慣チェックと、続けやすい記録ツールが使えます。</p>
+  </header>
+  <section class="card" id="pickCard">
+    <h2><span class="d"></span>あなたのタイプを選ぶ</h2>
+    <p class="note">診断結果のタイプをタップ。（あとで変更もできます）</p>
+    <div class="picker" id="picker"></div>
+  </section>
+  <section class="card hidden" id="careCard">
+    <h2><span class="d"></span>あなたのタイプ <button class="change" id="changeBtn">変更</button></h2>
+    <div class="me" id="meHead"></div>
+    <div class="row2" id="descBlock"></div>
+    <div class="row2" id="balanceBlock"></div>
+  </section>
+  <section class="card hidden" id="checkCard">
+    <h2><span class="d"></span>心のバランス習慣チェック</h2>
+    <p class="note">あなたのタイプに合わせた、心を健やかに保つ小さな習慣。チェックは自動保存されます。</p>
+    <div class="checks" id="checks"></div>
+  </section>
+  <section class="card hidden" id="logCard">
+    <h2><span class="d"></span>ごきげんログ</h2>
+    <p class="note">今日の気分とひとこと。続けると、自分が元気になるパターンが見えてきます。（自動保存）</p>
+    <div class="field"><label>日付</label><input type="date" id="lgDate"></div>
+    <div class="field"><label>今日のごきげん</label>
+      <div class="mood" id="mood" style="display:flex;gap:8px">
+        <span data-v="1" style="flex:1;text-align:center;padding:8px 0;border:1px solid var(--panel-br);border-radius:10px;cursor:pointer;font-size:1.3rem">😔</span>
+        <span data-v="2" style="flex:1;text-align:center;padding:8px 0;border:1px solid var(--panel-br);border-radius:10px;cursor:pointer;font-size:1.3rem">😐</span>
+        <span data-v="3" style="flex:1;text-align:center;padding:8px 0;border:1px solid var(--panel-br);border-radius:10px;cursor:pointer;font-size:1.3rem">🙂</span>
+        <span data-v="4" style="flex:1;text-align:center;padding:8px 0;border:1px solid var(--panel-br);border-radius:10px;cursor:pointer;font-size:1.3rem">😄</span>
+        <span data-v="5" style="flex:1;text-align:center;padding:8px 0;border:1px solid var(--panel-br);border-radius:10px;cursor:pointer;font-size:1.3rem">🤩</span>
+      </div>
+    </div>
+    <div class="field"><label>ひとことメモ（今日のうれしかったこと等）</label><textarea id="lgMemo" placeholder="例: 久しぶりに思い切り笑った"></textarea></div>
+    <div><button class="save-btn" id="lgAdd">記録する</button><span class="flash" id="flash">保存しました ✓</span></div>
+    <div class="logs" id="logs"></div>
+    <div style="margin-top:16px"><button class="reset" id="reset">保存データを消す</button></div>
+  </section>
+  <footer>※遊びの診断に基づく前向きなセルフケア補助です。精神年齢に良い・悪いはありません。<br>どの年齢にも、その人だけの魅力があります。</footer>
+</div>
+<script>
+const TYPES={
+ "child":{e:"🍭",t:"無邪気なこども",d:"好奇心のかたまり。損得抜きで「楽しい!」に全力。",
+   bal:"勢いと素直さが武器。たまに“ひと呼吸”置くと、もっと魅力的に。",
+   list:["今日、衝動の前に5秒だけ考えてみた","小さな約束をひとつ守った","“楽しい!”を誰かと分かち合った"]},
+ "teen":{e:"🎮",t:"青春まっただ中",d:"ノリと情熱で動く青春タイプ。感情がまっすぐ。",
+   bal:"その熱量は財産。続ける仕組みを足すと無敵。",
+   list:["やりかけのことを一つ最後までやった","感情的になった時、一度深呼吸した","好きなことに全力で時間を使った"]},
+ "young":{e:"🎧",t:"自由を愛する若者",d:"トレンドに敏感でフットワークが軽い、しなやかな自由人。",
+   bal:"身軽さが強み。少し先を見据えると伸びしろが開く。",
+   list:["今日の小さな“先の計画”を立てた","新しいことに一つ挑戦した","自分の“好き”を大事にできた"]},
+ "adult":{e:"☕",t:"バランスの取れた大人",d:"遊びも責任もちょうどよく両立、頼れる存在。",
+   bal:"安定感が魅力。たまに童心に戻ると、もっと面白く。",
+   list:["今日、意識して“遊び心”を出した","頑張りすぎず、ちゃんと休んだ","誰かに頼る/頼られることをした"]},
+ "sage":{e:"📚",t:"落ち着いた賢者見習い",d:"冷静で思慮深く、相談されることが多いアドバイザー気質。",
+   bal:"その落ち着きは宝。直感や衝動もたまには信じて。",
+   list:["考えすぎず、直感で一つ決めてみた","頭で抱えたことを誰かに話した","ワクワクすることに時間を割いた"]},
+ "hermit":{e:"🦉",t:"達観した仙人",d:"何があっても動じない悟りの境地。本質を見抜く大物。",
+   bal:"その余裕は憧れの的。若い勢いに乗っかる日があってもいい。",
+   list:["新しい刺激を一つ取り入れた","人との交流を一つ楽しんだ","“まあいっか”で肩の力を抜いた"]}
+};
+const ORDER=["child","teen","young","adult","sage","hermit"];
+const KEY="mentalage_kit_v1";
+let st=load();
+function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{type:null,checks:{},logs:[]};}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+const picker=document.getElementById('picker');
+ORDER.forEach(code=>{const t=TYPES[code];const b=document.createElement('div');b.className='pick';
+  b.innerHTML=`<div class="e">${t.e}</div><div class="n">${t.t}</div>`;
+  b.onclick=()=>{st.type=code;if(!st.checks[code])st.checks[code]=[false,false,false];save();renderAll();window.scrollTo({top:document.getElementById('careCard').offsetTop-20,behavior:'smooth'});};
+  picker.appendChild(b);});
+document.getElementById('changeBtn').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
+function renderAll(){
+  if(!st.type)return;const code=st.type,t=TYPES[code];
+  ['careCard','checkCard','logCard'].forEach(id=>document.getElementById(id).classList.remove('hidden'));
+  [...picker.children].forEach((el,i)=>el.classList.toggle('sel',ORDER[i]===code));
+  document.getElementById('meHead').innerHTML=`<div class="big">${t.e}</div><div><div class="name">${t.t}</div></div>`;
+  document.getElementById('descBlock').innerHTML=`<h3>🪞 あなたの中身</h3><p>${t.d}</p>`;
+  document.getElementById('balanceBlock').innerHTML=`<h3>✨ 心のバランスのコツ</h3><p>${t.bal}</p>`;
+  const checks=document.getElementById('checks');checks.innerHTML='';
+  if(!st.checks[code])st.checks[code]=[false,false,false];
+  t.list.forEach((item,i)=>{const d=document.createElement('div');d.className='check'+(st.checks[code][i]?' done':'');
+    d.innerHTML=`<div class="cbox"><svg viewBox="0 0 24 24" fill="none" stroke="#1a1535" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="t">${item}</div>`;
+    d.onclick=()=>{st.checks[code][i]=!st.checks[code][i];save();renderAll();};checks.appendChild(d);});
+  document.getElementById('lgDate').value=document.getElementById('lgDate').value||today();
+  renderLogs();
+}
+const today=()=>new Date().toLocaleDateString('sv-SE');
+let moodSel="";const moodEl=document.getElementById('mood');
+moodEl.querySelectorAll('span').forEach(s=>s.onclick=()=>{moodEl.querySelectorAll('span').forEach(x=>x.style.background="");s.style.background="rgba(139,123,255,.3)";moodSel=s.dataset.v;});
+const logsEl=document.getElementById('logs');
+function renderLogs(){logsEl.innerHTML='';const f={1:"😔",2:"😐",3:"🙂",4:"😄",5:"🤩"};
+  st.logs.slice().reverse().forEach((l,ri)=>{const idx=st.logs.length-1-ri;const div=document.createElement('div');div.className='logitem';
+    div.innerHTML=`<span class="d">${l.date||""}</span>${l.mood?`<span style="font-size:1.1rem">${f[l.mood]||""}</span>`:""}<span class="m">${l.memo?esc(l.memo):""}</span><button class="del">×</button>`;
+    div.querySelector('.del').onclick=()=>{st.logs.splice(idx,1);save();renderLogs();};logsEl.appendChild(div);});}
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+document.getElementById('lgAdd').onclick=()=>{const date=document.getElementById('lgDate').value||today();const memo=document.getElementById('lgMemo').value.trim();
+  if(!memo&&!moodSel)return;st.logs.push({date,mood:moodSel,memo});save();renderLogs();
+  document.getElementById('lgMemo').value="";moodSel="";moodEl.querySelectorAll('span').forEach(x=>x.style.background="");
+  const fl=document.getElementById('flash');fl.classList.add('show');setTimeout(()=>fl.classList.remove('show'),1400);};
+document.getElementById('reset').onclick=()=>{if(confirm("選んだタイプ・チェック・ログをすべて消します。よろしいですか?")){
+  st={type:null,checks:{},logs:[]};save();['careCard','checkCard','logCard'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  [...picker.children].forEach(el=>el.classList.remove('sel'));window.scrollTo({top:0,behavior:'smooth'});}};
+const cv=document.getElementById('stars'),cx=cv.getContext('2d');let stz=[];
+function rs(){cv.width=innerWidth;cv.height=innerHeight;stz=[];const n=Math.floor(innerWidth*innerHeight/9000);for(let i=0;i<n;i++)stz.push({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.4+.3,p:Math.random()*6,sp:Math.random()*.02+.005});}
+addEventListener('resize',rs);rs();
+function loop(){cx.clearRect(0,0,cv.width,cv.height);for(const s of stz){s.p+=s.sp;const a=.35+Math.sin(s.p)*.35;cx.beginPath();cx.arc(s.x,s.y,s.r,0,7);cx.fillStyle='rgba(200,190,255,'+a+')';cx.fill();}requestAnimationFrame(loop);}
+loop();
+document.getElementById('lgDate').value=today();
+renderAll();
+</script>
+</body>
+</html>
