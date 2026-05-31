@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<!--
+=================================================================
+  90日 小さな行動トラッカー（特典）/「1年で人生が変わった小さな行動」
+  毎日の小さな一歩を記録 → 連続日数・達成率を可視化 → 振り返りログ。
+  【配布】GitHub Pages等に置きURLを記事に貼る or ファイル配布。自動保存・リセット可。
+=================================================================
+-->
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>90日 小さな行動トラッカー</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Shippori+Mincho:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#161e2c;--bg2:#241f2e;--bg3:#0e0c14;--ink:#f3ede4;--muted:#b6a99c;
+    --sun:#ffab5a;--sun2:#ffc784;--blue:#6e8cdf;--green:#5cd08a;--gold:#ffd66b;
+    --panel:rgba(50,42,52,.5);--panel-br:rgba(255,171,90,.24);
+    --display:'Shippori Mincho',serif;--body:'Zen Maru Gothic',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--body);color:var(--ink);min-height:100vh;overflow-x:hidden;line-height:1.8;background:linear-gradient(165deg,#161e2c,#241f2e 55%,#0e0c14)}
+  #fx{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .glow{position:fixed;border-radius:50%;filter:blur(60px);opacity:.34;z-index:0;pointer-events:none;background:radial-gradient(circle,var(--sun),transparent 70%);animation:f 28s ease-in-out infinite}
+  .glow.b{background:radial-gradient(circle,var(--blue),transparent 70%);animation-duration:34s}
+  @keyframes f{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-40px)}}
+  .wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:0 18px 70px}
+  header{text-align:center;padding:56px 0 14px}
+  .eyebrow{font-size:.72rem;letter-spacing:.28em;color:var(--sun2);margin-bottom:12px}
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,5.6vw,2.5rem);line-height:1.34;text-shadow:0 0 26px rgba(255,171,90,.32)}
+  .lead{color:var(--muted);margin:14px auto 0;max-width:46ch;font-size:.98rem}
+  .card{background:var(--panel);border:1px solid var(--panel-br);border-radius:18px;padding:24px 20px;margin:20px 0;backdrop-filter:blur(8px);box-shadow:0 24px 70px -34px rgba(0,0,0,.7)}
+  h2{font-family:var(--display);font-weight:700;font-size:1.25rem;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+  h2 .d{width:8px;height:8px;border-radius:50%;background:var(--sun);box-shadow:0 0 12px var(--sun)}
+  .note{color:var(--muted);font-size:.85rem;margin-bottom:14px}
+  label{font-size:.82rem;color:var(--muted)}
+  input,textarea{width:100%;background:rgba(14,12,20,.6);border:1px solid var(--panel-br);border-radius:10px;color:var(--ink);font-family:var(--body);font-size:.98rem;padding:11px 13px;margin-top:6px}
+  input:focus,textarea:focus{outline:none;border-color:var(--sun)}
+  textarea{resize:vertical;min-height:54px}
+  .stats{display:flex;gap:12px;flex-wrap:wrap;margin:6px 0 4px}
+  .stat{flex:1;min-width:120px;background:rgba(255,255,255,.05);border:1px solid var(--panel-br);border-radius:14px;padding:14px;text-align:center}
+  .stat .v{font-family:var(--display);font-size:2rem;font-weight:700;color:var(--sun2)}
+  .stat .l{color:var(--muted);font-size:.78rem;margin-top:2px}
+  .grid{display:grid;grid-template-columns:repeat(15,1fr);gap:6px;margin-top:8px}
+  .cell{aspect-ratio:1;border-radius:6px;background:rgba(255,255,255,.07);border:1px solid var(--panel-br);cursor:pointer;display:grid;place-items:center;font-size:.62rem;color:#7a7066;transition:.15s;user-select:none}
+  .cell:hover{border-color:var(--sun)}
+  .cell.on{background:linear-gradient(135deg,var(--sun),var(--sun2));border-color:var(--sun);color:#3a2410;font-weight:700}
+  .cell.today{box-shadow:0 0 0 2px var(--gold)}
+  .bar{height:12px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden;margin-top:12px}
+  .barf{height:100%;width:0;background:linear-gradient(90deg,var(--sun),var(--gold));transition:width .8s ease}
+  .save-btn{font-family:var(--body);font-weight:700;color:#241f2e;background:linear-gradient(135deg,var(--sun2),var(--sun));border:none;border-radius:999px;padding:11px 28px;cursor:pointer;transition:.25s;margin-top:10px}
+  .save-btn:hover{transform:translateY(-2px);filter:brightness(1.07)}
+  .flash{color:var(--gold);font-size:.82rem;opacity:0;transition:.3s;margin-left:12px}.flash.show{opacity:1}
+  .logs{margin-top:14px;display:grid;gap:9px}
+  .logitem{background:rgba(255,255,255,.05);border:1px solid var(--panel-br);border-left:3px solid var(--sun);border-radius:11px;padding:11px 14px;font-size:.88rem;display:flex;gap:12px;flex-wrap:wrap;align-items:baseline}
+  .logitem .dd{font-family:monospace;color:var(--sun2);font-size:.78rem}.logitem .m{color:var(--muted);flex:1;min-width:150px}
+  .del{margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem}.del:hover{color:var(--sun2)}
+  .reset{margin-top:8px;background:transparent;border:1px solid var(--panel-br);color:var(--muted);padding:9px 20px;border-radius:999px;font-size:.84rem;cursor:pointer}
+  .reset:hover{background:rgba(255,255,255,.08)}
+  .quote{text-align:center;font-family:var(--display);color:var(--sun2);font-size:1.05rem;margin:8px 0 0;min-height:1.6em}
+  footer{text-align:center;color:var(--muted);font-size:.8rem;padding:10px 10px 50px;line-height:1.7}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+<div class="glow" style="width:300px;height:300px;top:8%;left:-70px"></div>
+<div class="glow b" style="width:320px;height:320px;top:62%;right:-80px"></div>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">90-DAY SMALL ACTION TRACKER</div>
+    <h1>90日 小さな行動<br>トラッカー</h1>
+    <p class="lead">大きな目標より、毎日できる「小さな一歩」を1つ。タップで積み上げて、変化を目に見える形に。</p>
+  </header>
+
+  <section class="card">
+    <h2><span class="d"></span>あなたの「小さな一歩」を決める</h2>
+    <p class="note">ハードルは思いきり低く。「5分だけ」「1行だけ」でOK。続くことが何より大事。</p>
+    <label>毎日やる、小さな行動</label>
+    <input id="action" placeholder="例: 副業の作業を10分 / 本を1ページ / AIに1つ質問する">
+    <div class="quote" id="quote"></div>
+  </section>
+
+  <section class="card">
+    <h2><span class="d"></span>90日カレンダー</h2>
+    <p class="note">やった日のマスをタップ。金枠が今日です。（自動保存）</p>
+    <div class="stats">
+      <div class="stat"><div class="v" id="sDone">0</div><div class="l">達成した日</div></div>
+      <div class="stat"><div class="v" id="sStreak">0</div><div class="l">連続日数(最長)</div></div>
+      <div class="stat"><div class="v" id="sPct">0%</div><div class="l">達成率</div></div>
+    </div>
+    <div class="bar"><div class="barf" id="barf"></div></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="card">
+    <h2><span class="d"></span>変化メモ</h2>
+    <p class="note">気づいた変化を、ときどき書き残して。あとで読むと「ちゃんと進んでた」と分かります。（自動保存）</p>
+    <textarea id="memo" placeholder="例: 3週間続いた。前より朝が動けるようになった気がする。"></textarea>
+    <div><button class="save-btn" id="memoSave">メモを保存</button><span class="flash" id="flash">保存しました ✓</span></div>
+    <div class="logs" id="logs"></div>
+    <div style="margin-top:14px"><button class="reset" id="reset">すべてリセット</button></div>
+  </section>
+
+  <footer>※小さな行動でも、続けば大きな変化に。うまくいかない日があっても大丈夫。また次の日から始めれば、それでいい。</footer>
+</div>
+<script>
+const KEY="action90_v1";
+let st=load();
+function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{action:"",days:{},memo:"",logs:[],start:today()};}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+function today(){return new Date().toLocaleDateString('sv-SE');}
+
+const actionEl=document.getElementById('action');
+actionEl.value=st.action||"";
+actionEl.addEventListener('input',()=>{st.action=actionEl.value;save();renderQuote();});
+const QUOTES=["千里の道も一歩から。","昨日の自分を、ほんの少し超える。","小さく、でも止まらない。","続けた人だけが見る景色がある。","完璧より、継続。"];
+function renderQuote(){document.getElementById('quote').textContent = st.action? "「"+st.action+"」を90日。" : QUOTES[Math.floor(Math.random()*QUOTES.length)];}
+
+const grid=document.getElementById('grid');
+function render(){
+  grid.innerHTML='';
+  const t=today();
+  // day index from start
+  for(let i=1;i<=90;i++){
+    const cell=document.createElement('div');
+    cell.className='cell'+(st.days[i]?' on':'');
+    cell.textContent=i;
+    cell.onclick=()=>{st.days[i]=!st.days[i];if(!st.days[i])delete st.days[i];save();render();};
+    grid.appendChild(cell);
+  }
+  const done=Object.keys(st.days).filter(k=>st.days[k]).length;
+  // longest streak over 1..90 by consecutive done
+  let best=0,cur=0;
+  for(let i=1;i<=90;i++){ if(st.days[i]){cur++;best=Math.max(best,cur);} else cur=0; }
+  const pct=Math.round(done/90*100);
+  document.getElementById('sDone').textContent=done;
+  document.getElementById('sStreak').textContent=best;
+  document.getElementById('sPct').textContent=pct+'%';
+  document.getElementById('barf').style.width=pct+'%';
+}
+document.getElementById('memo').value=st.memo||"";
+document.getElementById('memoSave').onclick=()=>{
+  const v=document.getElementById('memo').value.trim();
+  if(v){st.logs.push({date:today(),memo:v});st.memo="";document.getElementById('memo').value="";}
+  else{st.memo=document.getElementById('memo').value;}
+  save();renderLogs();
+  const f=document.getElementById('flash');f.classList.add('show');setTimeout(()=>f.classList.remove('show'),1400);
+};
+const logsEl=document.getElementById('logs');
+function renderLogs(){logsEl.innerHTML='';st.logs.slice().reverse().forEach((l,ri)=>{const idx=st.logs.length-1-ri;const div=document.createElement('div');div.className='logitem';
+  div.innerHTML=`<span class="dd">${l.date||''}</span><span class="m">${esc(l.memo||'')}</span><button class="del">×</button>`;
+  div.querySelector('.del').onclick=()=>{st.logs.splice(idx,1);save();renderLogs();};logsEl.appendChild(div);});}
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+document.getElementById('reset').onclick=()=>{if(confirm('行動・カレンダー・メモをすべて消します。よろしいですか?')){st={action:"",days:{},memo:"",logs:[],start:today()};save();actionEl.value="";document.getElementById('memo').value="";render();renderLogs();renderQuote();}};
+
+const cv=document.getElementById('fx'),cx=cv.getContext('2d');let ps=[];
+function rs(){cv.width=innerWidth;cv.height=innerHeight;}addEventListener('resize',rs);rs();
+for(let i=0;i<60;i++)ps.push({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.5+.4,p:Math.random()*6,sp:Math.random()*.016+.004});
+function loop(){cx.clearRect(0,0,cv.width,cv.height);for(const p of ps){p.p+=p.sp;const a=.2+Math.sin(p.p)*.2;cx.beginPath();cx.arc(p.x,p.y,p.r,0,7);cx.fillStyle='rgba(255,190,130,'+a+')';cx.fill();}requestAnimationFrame(loop);}
+loop();
+renderQuote();render();renderLogs();
+</script>
+</body>
+</html>
