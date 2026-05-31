@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<!--
+=================================================================
+  マイクラ コマンド検索＆コピーツール（特典）/ 統合版100種
+  検索・カテゴリ絞り込み・ワンクリックコピー。PS5/Switch/スマホ/Win対応(統合版)。
+  【配布】GitHub Pages等に置きURLを記事に貼る or ファイル配布。
+  ※チートON前提。他人のサーバーで無断使用しない。地形破壊系は実験ワールド推奨。
+=================================================================
+-->
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>マイクラ コマンド検索ツール（統合版100種）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1a1f1a;--bg2:#11150f;--panel:#222a1e;--panel2:#2b3527;--line:#3a4733;
+    --ink:#e9f0e4;--muted:#9aa890;--grass:#7cc23f;--grass2:#a3e05f;--dirt:#9a6b43;--gold:#ffd24a;
+    --body:'Zen Kaku Gothic New',sans-serif;--mono:'JetBrains Mono',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--body);background:var(--bg);color:var(--ink);line-height:1.7;padding-bottom:60px}
+  .top{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#1a1f1a,rgba(26,31,26,.96));border-bottom:2px solid var(--grass);backdrop-filter:blur(8px);padding:16px 16px 12px}
+  .wrap{max-width:880px;margin:0 auto;padding:0 16px}
+  h1{font-size:1.3rem;font-weight:700;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  h1 .badge{font-family:var(--mono);font-size:.7rem;background:var(--grass);color:#0e2b00;padding:3px 9px;border-radius:6px}
+  .sub{color:var(--muted);font-size:.84rem;margin-top:4px}
+  .search{margin-top:12px;width:100%;background:var(--panel);border:2px solid var(--line);border-radius:8px;color:var(--ink);font-family:var(--body);font-size:1rem;padding:11px 14px}
+  .search:focus{outline:none;border-color:var(--grass)}
+  .cats{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .cat{font-size:.8rem;background:var(--panel);border:1px solid var(--line);color:var(--muted);padding:6px 12px;border-radius:6px;cursor:pointer;transition:.15s;white-space:nowrap}
+  .cat:hover{border-color:var(--grass)}
+  .cat.on{background:var(--grass);color:#0e2b00;border-color:var(--grass);font-weight:700}
+  .count{color:var(--muted);font-size:.8rem;margin:14px 0 4px}
+  .item{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin:10px 0;padding:14px 16px}
+  .ihead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  .ttl{font-weight:700;font-size:1.02rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .cb{font-family:var(--mono);font-size:.62rem;background:rgba(255,210,74,.16);color:var(--gold);padding:2px 7px;border-radius:5px}
+  .icat{font-family:var(--mono);font-size:.66rem;color:var(--grass2);margin-top:3px}
+  .idesc{color:var(--muted);font-size:.86rem;margin-top:5px}
+  .copy{flex:0 0 auto;font-family:var(--body);font-size:.82rem;background:var(--panel2);border:1px solid var(--line);color:var(--ink);padding:8px 14px;border-radius:7px;cursor:pointer;transition:.15s;white-space:nowrap}
+  .copy:hover{border-color:var(--grass);color:var(--grass2)}
+  .copy.done{background:var(--grass);color:#0e2b00;border-color:var(--grass)}
+  .cmd{margin-top:10px;background:#0e120c;border:1px solid var(--line);border-radius:7px;padding:10px 12px;font-family:var(--mono);font-size:.84rem;color:#cfe8b8;overflow-x:auto;white-space:pre-wrap;word-break:break-all}
+  .empty{text-align:center;color:var(--muted);padding:46px 0}
+  footer{color:var(--muted);font-size:.78rem;text-align:center;margin-top:28px;padding:0 16px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="wrap" style="padding:0">
+    <h1>マイクラ コマンド検索ツール <span class="badge">統合版 100種</span></h1>
+    <div class="sub">検索 or カテゴリで絞り込み →「コピー」でチャット欄に貼るだけ。PS5・Switch・スマホ・Win対応。</div>
+    <input class="search" id="search" placeholder="🔍 やりたいことで検索（例: 爆発, 雪玉, 雷, 飛ぶ, 無敵, 溶岩）">
+    <div class="cats" id="cats"></div>
+  </div>
+</div>
+<div class="wrap">
+  <div class="count" id="count"></div>
+  <div id="list"></div>
+  <div class="empty" id="empty" style="display:none">該当なし。別のキーワードで試してね。</div>
+</div>
+<footer>※チートONのワールドで使用。他人のサーバーでは無断使用しないでください。TNT・溶岩・fill等は地形を壊すので実験用ワールド推奨。<br>（CB）はコマンドブロック推奨。バージョンにより構文が変わる場合があります。</footer>
+<script>
+const DATA=[{"c": "爆発・インパクト系", "t": "足元で即・大爆発", "d": "自分の足元にTNTを召喚して大爆発。ドッキリや演出に。", "m": "/summon tnt ~ ~ ~", "b": 0}, {"c": "爆発・インパクト系", "t": "目の前に大爆発を起こす", "d": "視線の少し先で爆発エフェクト＋ダメージ。", "m": "/summon tnt ^ ^ ^3", "b": 0}, {"c": "爆発・インパクト系", "t": "巨大爆発(エンドクリスタル)", "d": "エンドクリスタルを置いて殴ると特大爆発。派手さNo.1。", "m": "/summon end_crystal ~ ~1 ~", "b": 0}, {"c": "爆発・インパクト系", "t": "全モブの位置で同時爆発", "d": "読み込み中の全モブの足元でTNT爆発。一掃演出。", "m": "/execute @e[type=!player] ~ ~ ~ summon tnt", "b": 1}, {"c": "爆発・インパクト系", "t": "狙った敵だけ爆破", "d": "一番近い敵モブの位置でTNT爆発。", "m": "/execute @e[type=!player,c=1] ~ ~ ~ summon tnt", "b": 0}, {"c": "爆発・インパクト系", "t": "空から隕石(着弾で爆発)", "d": "頭上高くにTNTを連続召喚して降らせる。隕石の雨。", "m": "/summon tnt ~ ~30 ~", "b": 1}, {"c": "爆発・インパクト系", "t": "雪玉を投げて演出開始", "d": "スノーボールを発射。これを検知して爆発を起こす土台に。", "m": "/summon snowball ^ ^1 ^1", "b": 0}, {"c": "爆発・インパクト系", "t": "雪玉の着弾点で大爆発", "d": "コマブロ(反復・常時)で雪玉の位置にTNTを出す。投げて爆発が実現。", "m": "/execute @e[type=snowball] ~ ~ ~ summon tnt", "b": 1}, {"c": "爆発・インパクト系", "t": "卵を投げて落雷", "d": "スノーボールや卵の位置に落雷を落とす(反復実行)。", "m": "/execute @e[type=snowball] ~ ~ ~ summon lightning_bolt", "b": 1}, {"c": "爆発・インパクト系", "t": "自分に落雷を落とす", "d": "真上から雷。派手な登場・演出に。", "m": "/summon lightning_bolt ~ ~ ~", "b": 0}, {"c": "爆発・インパクト系", "t": "視線の先に落雷", "d": "狙った地点に雷を落とす。", "m": "/summon lightning_bolt ^ ^ ^5", "b": 0}, {"c": "爆発・インパクト系", "t": "全プレイヤーに落雷", "d": "ドッキリや罰ゲームに(マルチ向け)。", "m": "/execute @a ~ ~ ~ summon lightning_bolt", "b": 1}, {"c": "爆発・インパクト系", "t": "巨大な炎の柱", "d": "自分の位置に高く炎パーティクルを噴き上げる。", "m": "/particle minecraft:huge_explosion_emitter ~ ~ ~", "b": 0}, {"c": "爆発・インパクト系", "t": "爆発の煙エフェクト", "d": "大きな爆発の見た目だけ出す(ダメージなし)。", "m": "/particle minecraft:large_explosion ~ ~1 ~", "b": 0}, {"c": "爆発・インパクト系", "t": "花火を打ち上げる", "d": "お祝い・演出に花火ロケットを発射。", "m": "/summon fireworks_rocket ~ ~1 ~", "b": 0}, {"c": "爆発・インパクト系", "t": "周囲を火の海にする", "d": "自分の周りのブロックを炎に。注意して使用。", "m": "/fill ~-3 ~ ~-3 ~3 ~ ~3 fire", "b": 1}, {"c": "爆発・インパクト系", "t": "溶岩を足元に出す", "d": "足元に溶岩源を設置。脱出ゲームやトラップに。", "m": "/setblock ~ ~ ~ lava", "b": 0}, {"c": "爆発・インパクト系", "t": "指定範囲を溶岩で満たす", "d": "広範囲を溶岩に。世界を焼く演出(自己責任)。", "m": "/fill ~-5 ~ ~-5 ~5 ~ ~5 lava", "b": 1}, {"c": "爆発・インパクト系", "t": "爆発で大穴を掘る(空気化)", "d": "周囲をまとめて空気にして大穴を作る。", "m": "/fill ~-5 ~-5 ~-5 ~5 ~5 ~5 air", "b": 1}, {"c": "爆発・インパクト系", "t": "連続TNTで地形破壊", "d": "頭上から大量TNTを降らせて地形ごと吹き飛ばす。", "m": "/execute @a ~ ~10 ~ summon tnt", "b": 1}, {"c": "爆発・インパクト系", "t": "近くの敵をまとめて消す", "d": "半径10ブロックの敵モブを一掃。", "m": "/kill @e[type=!player,r=10]", "b": 0}, {"c": "爆発・インパクト系", "t": "巨大な爆発音と煙", "d": "大爆発パーティクル＋効果音で迫力演出。", "m": "/playsound random.explode @a ~ ~ ~", "b": 0}, {"c": "爆発・インパクト系", "t": "自分以外を吹き飛ばす(ノックバック)", "d": "周囲のモブに上方向の勢いを与える。要effect併用。", "m": "/effect @e[type=!player,r=8] levitation 3 9", "b": 0}, {"c": "爆発・インパクト系", "t": "ウィザー召喚で大混乱", "d": "強敵ウィザーを召喚。倒すと大爆発＆貴重ドロップ。", "m": "/summon wither", "b": 0}, {"c": "爆発・インパクト系", "t": "村人を一瞬で全員雷化(ネタ)", "d": "近くの村人に落雷→ウィッチ化する有名ネタ。", "m": "/execute @e[type=villager,r=10] ~ ~ ~ summon lightning_bolt", "b": 1}, {"c": "天候・空・環境", "t": "晴れにする", "d": "雨や雷雨を一発で止める。", "m": "/weather clear", "b": 0}, {"c": "天候・空・環境", "t": "雨を降らせる", "d": "天候を雨に。", "m": "/weather rain", "b": 0}, {"c": "天候・空・環境", "t": "雷雨にする", "d": "稲妻ゴロゴロの雷雨に。演出に最適。", "m": "/weather thunder", "b": 0}, {"c": "天候・空・環境", "t": "時間を朝にする", "d": "夜明け・朝に固定したいとき。", "m": "/time set day", "b": 0}, {"c": "天候・空・環境", "t": "時間を夜にする", "d": "夜・モンスター湧きの演出に。", "m": "/time set night", "b": 0}, {"c": "天候・空・環境", "t": "時間を止める(昼固定)", "d": "デイライトサイクルを止めてずっと昼。", "m": "/gamerule dodaylightcycle false", "b": 0}, {"c": "天候・空・環境", "t": "天候を止める", "d": "ずっと晴れ。雨を二度と降らせない。", "m": "/gamerule doweathercycle false", "b": 0}, {"c": "天候・空・環境", "t": "霧を出す(幻想演出)", "d": "プレイヤーに霧の効果を付与。ホラーや演出に。", "m": "/fog @s push minecraft:fog_crimson_forest myfog", "b": 0}, {"c": "天候・空・環境", "t": "霧を消す", "d": "付けた霧を解除する。", "m": "/fog @s remove myfog", "b": 0}, {"c": "天候・空・環境", "t": "夜空に大量の雷(演出)", "d": "ランダムに近くで雷。嵐の戦闘演出。", "m": "/execute @a ~ ~ ~ summon lightning_bolt ~ ~5 ~", "b": 1}, {"c": "天候・空・環境", "t": "周囲を雪原に変える(降雪)", "d": "バイオーム演出＋雪。雪玉ネタと相性◎。", "m": "/weather rain", "b": 0}, {"c": "天候・空・環境", "t": "satフルにして昼夜固定演出", "d": "時間を正午で止めて撮影向きに。", "m": "/time set noon", "b": 0}, {"c": "天候・空・環境", "t": "真夜中に固定", "d": "time setと併用で雰囲気作り。", "m": "/time set midnight", "b": 0}, {"c": "天候・空・環境", "t": "日の出を演出", "d": "朝焼けのタイミングに合わせる。", "m": "/time set sunrise", "b": 0}, {"c": "天候・空・環境", "t": "日の入りを演出", "d": "夕焼け。スクショ・配信映えに。", "m": "/time set sunset", "b": 0}, {"c": "召喚・モブ系", "t": "最強モブ軍団を呼ぶ", "d": "近くにアイアンゴーレムを召喚して護衛に。", "m": "/summon iron_golem", "b": 0}, {"c": "召喚・モブ系", "t": "エンダードラゴンを召喚", "d": "ボスを地上に呼ぶ。腕試しに(統合版)。", "m": "/summon ender_dragon", "b": 0}, {"c": "召喚・モブ系", "t": "ゾンビの大群", "d": "executeで複数同時召喚(統合版固有)。", "m": "/execute @a[c=20] ~ ~ ~ summon zombie", "b": 1}, {"c": "召喚・モブ系", "t": "光る目印モブ(発光)", "d": "召喚直後に発光させて位置を分かりやすく。", "m": "/summon armor_stand ~ ~ ~ ; /effect @e[type=armor_stand,c=1] glowing 9999 0", "b": 0}, {"c": "召喚・モブ系", "t": "名前付きモブを召喚", "d": "名札付きの特別なモブを出す。", "m": "/summon creeper ~ ~ ~ minecraft:entity_spawned ボス", "b": 0}, {"c": "召喚・モブ系", "t": "乗れる馬を即召喚", "d": "移動用に馬をすぐ用意。", "m": "/summon horse", "b": 0}, {"c": "召喚・モブ系", "t": "村人を呼んで取引相手に", "d": "近くに村人を召喚。", "m": "/summon villager", "b": 0}, {"c": "召喚・モブ系", "t": "テイム済みオオカミを召喚", "d": "お供のオオカミ。", "m": "/summon wolf", "b": 0}, {"c": "召喚・モブ系", "t": "巨大スライム", "d": "大きいサイズのスライムを召喚(イベントで指定)。", "m": "/summon slime ~ ~ ~ minecraft:spawn_large", "b": 0}, {"c": "召喚・モブ系", "t": "全モブをその場で消す", "d": "散らかったモブを一括整理(プレイヤー以外)。", "m": "/kill @e[type=!player]", "b": 0}, {"c": "召喚・モブ系", "t": "特定モブだけ消す", "d": "ゾンビだけ消すなどtype指定。", "m": "/kill @e[type=zombie]", "b": 0}, {"c": "召喚・モブ系", "t": "アイテム化したドロップを消す", "d": "落ちてるアイテムを掃除して軽くする。", "m": "/kill @e[type=item]", "b": 0}, {"c": "召喚・モブ系", "t": "自分の周りを守衛で固める", "d": "アイアンゴーレムを複数召喚。", "m": "/execute @a[c=4] ~ ~ ~ summon iron_golem", "b": 1}, {"c": "召喚・モブ系", "t": "ニワトリの雨(ネタ)", "d": "頭上から大量のニワトリ。和むカオス。", "m": "/execute @a ~ ~15 ~ summon chicken", "b": 1}, {"c": "召喚・モブ系", "t": "発光する敵で鬼ごっこ", "d": "全モブを発光させて見つけやすく。", "m": "/effect @e[type=!player] glowing 999 0 true", "b": 0}, {"c": "アイテム・エンチャント", "t": "ダイヤ装備フルセット", "d": "頭から足まで一括は不可なので順に。まず兜。", "m": "/give @s diamond_helmet", "b": 0}, {"c": "アイテム・エンチャント", "t": "最強の剣(エンチャ付き)", "d": "ダメージ最大級のネザライト剣。", "m": "/give @s netherite_sword 1 0", "b": 0}, {"c": "アイテム・エンチャント", "t": "無限に使えるツルハシ気分", "d": "効率＆耐久マシマシのダイヤピッケル。", "m": "/give @s diamond_pickaxe", "b": 0}, {"c": "アイテム・エンチャント", "t": "エリトラ(空を飛ぶ翼)", "d": "背中に付けて滑空。花火と併用で飛行。", "m": "/give @s elytra", "b": 0}, {"c": "アイテム・エンチャント", "t": "花火ロケット大量(飛行用)", "d": "エリトラ飛行の燃料に64個。", "m": "/give @s firework_rocket 64", "b": 0}, {"c": "アイテム・エンチャント", "t": "エンチャント本(好きな効果)", "d": "付呪台で付ける用の本。", "m": "/give @s enchanted_book", "b": 0}, {"c": "アイテム・エンチャント", "t": "不死のトーテム", "d": "死亡を一度回避する超レア。", "m": "/give @s totem_of_undying", "b": 0}, {"c": "アイテム・エンチャント", "t": "エンダーパール大量", "d": "瞬間移動し放題。", "m": "/give @s ender_pearl 16", "b": 0}, {"c": "アイテム・エンチャント", "t": "ネザースター", "d": "ビーコンの材料になる激レア。", "m": "/give @s nether_star", "b": 0}, {"c": "アイテム・エンチャント", "t": "金リンゴ(エンチャント)", "d": "最強回復アイテム。", "m": "/give @s enchanted_golden_apple 8", "b": 0}, {"c": "アイテム・エンチャント", "t": "ダイヤブロック大量", "d": "建築や資産に。", "m": "/give @s diamond_block 64", "b": 0}, {"c": "アイテム・エンチャント", "t": "コマンドブロック入手", "d": "コマンド自動化の心臓部。チートONで。", "m": "/give @s command_block", "b": 0}, {"c": "アイテム・エンチャント", "t": "水入りバケツ", "d": "水流エレベーターや消火に。", "m": "/give @s water_bucket", "b": 0}, {"c": "アイテム・エンチャント", "t": "溶岩バケツ", "d": "かまど燃料やトラップに。", "m": "/give @s lava_bucket", "b": 0}, {"c": "アイテム・エンチャント", "t": "あらゆる色の花火を量産", "d": "お祝い・エンディング演出に。", "m": "/give @s firework_rocket 64 0", "b": 0}, {"c": "ワールド改変・建築", "t": "足場を一瞬で作る", "d": "目の前に石の床を生成。空中移動に。", "m": "/fill ~-2 ~-1 ~-2 ~2 ~-1 ~2 stone", "b": 0}, {"c": "ワールド改変・建築", "t": "巨大な壁を立てる", "d": "目の前にガラスの壁をドンと。", "m": "/fill ~ ~ ~3 ~ ~10 ~3 glass", "b": 0}, {"c": "ワールド改変・建築", "t": "足元にダイヤ床(ネタ)", "d": "成金気分のダイヤブロック床。", "m": "/fill ~-3 ~-1 ~-3 ~3 ~-1 ~3 diamond_block", "b": 0}, {"c": "ワールド改変・建築", "t": "目の前を更地にする", "d": "邪魔な地形をまとめて空気に。", "m": "/fill ~-5 ~ ~ ~5 ~10 ~10 air", "b": 1}, {"c": "ワールド改変・建築", "t": "水のプールを作る", "d": "くぼみを掘って水で満たす演出。", "m": "/fill ~-4 ~-1 ~-4 ~4 ~-1 ~4 water", "b": 0}, {"c": "ワールド改変・建築", "t": "一瞬で家の土台", "d": "石レンガで床を敷く。", "m": "/fill ~ ~ ~ ~8 ~ ~8 stonebrick", "b": 0}, {"c": "ワールド改変・建築", "t": "ガラスドームの中に入る", "d": "身を守るガラスの箱。", "m": "/fill ~-2 ~ ~-2 ~2 ~4 ~2 glass 0 hollow", "b": 0}, {"c": "ワールド改変・建築", "t": "溶岩を水で固める実験", "d": "隣接で黒曜石・丸石ができる定番。", "m": "/setblock ~ ~ ~ flowing_water", "b": 0}, {"c": "ワールド改変・建築", "t": "指定ブロックだけ置換", "d": "石を全部金に変えるなどreplace。", "m": "/fill ~-5 ~-5 ~-5 ~5 ~5 ~5 gold_block 0 replace stone", "b": 1}, {"c": "ワールド改変・建築", "t": "自分の周りをTNTで囲む", "d": "ぐるりとTNT。点火で大爆発(自己責任)。", "m": "/fill ~-2 ~ ~-2 ~2 ~ ~2 tnt", "b": 1}, {"c": "プレイヤー強化・効果", "t": "無敵になる(高耐性)", "d": "ダメージを大幅軽減。冒険が安全に。", "m": "/effect @s resistance 999 4 true", "b": 0}, {"c": "プレイヤー強化・効果", "t": "超スピードで走る", "d": "移動速度アップで爽快移動。", "m": "/effect @s speed 999 4 true", "b": 0}, {"c": "プレイヤー強化・効果", "t": "高くジャンプする", "d": "跳躍力アップで山も飛び越える。", "m": "/effect @s jump_boost 999 9 true", "b": 0}, {"c": "プレイヤー強化・効果", "t": "水中で無限呼吸", "d": "海底探検が快適に。", "m": "/effect @s water_breathing 999 0 true", "b": 0}, {"c": "プレイヤー強化・効果", "t": "暗闇でも見える", "d": "夜目。洞窟探検が楽に。", "m": "/effect @s night_vision 999 0 true", "b": 0}, {"c": "プレイヤー強化・効果", "t": "空を飛べるようにする", "d": "クリエ的に飛行可能(アドベンチャー以外)。", "m": "/ability @s mayfly true", "b": 0}, {"c": "プレイヤー強化・効果", "t": "無限に体力回復", "d": "リジェネで常時回復。", "m": "/effect @s regeneration 999 4 true", "b": 0}, {"c": "プレイヤー強化・効果", "t": "火に強くなる", "d": "溶岩・炎ダメージ無効。ネザー攻略に。", "m": "/effect @s fire_resistance 999 0 true", "b": 0}, {"c": "プレイヤー強化・効果", "t": "足が速く＆高跳び同時", "d": "speedとjump_boostを重ねて超人化。", "m": "/effect @s speed 999 2 true", "b": 0}, {"c": "プレイヤー強化・効果", "t": "姿を消す(透明化)", "d": "透明になってドッキリ。装備は見える点に注意。", "m": "/effect @s invisibility 999 0 true", "b": 0}, {"c": "便利・ゲームルール", "t": "死んでもアイテムを失わない", "d": "デスペナ無しで安心冒険。", "m": "/gamerule keepinventory true", "b": 0}, {"c": "便利・ゲームルール", "t": "モブが湧かないようにする", "d": "建築に集中したいときに。", "m": "/gamerule domobspawning false", "b": 0}, {"c": "便利・ゲームルール", "t": "火が燃え広がらない", "d": "建築物を火事から守る。", "m": "/gamerule dofiretick false", "b": 0}, {"c": "便利・ゲームルール", "t": "TNTで地形が壊れない", "d": "花火やTNT演出を安全に。", "m": "/gamerule tntexplodes false", "b": 0}, {"c": "便利・ゲームルール", "t": "指定の座標へワープ", "d": "好きな座標へ瞬間移動。", "m": "/tp @s 100 80 100", "b": 0}, {"c": "便利・ゲームルール", "t": "全員を自分の所に集合", "d": "マルチでみんなを呼ぶ。", "m": "/tp @a @s", "b": 1}, {"c": "便利・ゲームルール", "t": "スポーン地点を今ここに設定", "d": "リスポーン位置を変更。", "m": "/setworldspawn", "b": 0}, {"c": "便利・ゲームルール", "t": "難易度をピースフルに", "d": "敵が湧かない平和モード。", "m": "/difficulty peaceful", "b": 0}, {"c": "便利・ゲームルール", "t": "経験値を一気に与える", "d": "レベルを上げてエンチャント準備。", "m": "/xp 1000 @s", "b": 0}, {"c": "便利・ゲームルール", "t": "昼夜・天候を完全固定", "d": "time/weatherのgameruleをまとめてオフ。", "m": "/gamerule dodaylightcycle false", "b": 0}];const CATS=["爆発・インパクト系", "天候・空・環境", "召喚・モブ系", "アイテム・エンチャント", "ワールド改変・建築", "プレイヤー強化・効果", "便利・ゲームルール"];
+let activeCat="すべて",keyword="";
+const catsEl=document.getElementById('cats');
+["すべて",...CATS].forEach(c=>{const b=document.createElement('div');b.className='cat'+(c==="すべて"?" on":"");b.textContent=c;
+  b.onclick=()=>{activeCat=c;[...catsEl.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');render();};catsEl.appendChild(b);});
+document.getElementById('search').addEventListener('input',e=>{keyword=e.target.value.trim().toLowerCase();render();});
+const listEl=document.getElementById('list'),countEl=document.getElementById('count'),emptyEl=document.getElementById('empty');
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function render(){
+  const f=DATA.filter(x=>{
+    const cOk=activeCat==="すべて"||x.c===activeCat;
+    const kOk=!keyword||(x.t+" "+x.d+" "+x.m+" "+x.c).toLowerCase().includes(keyword);
+    return cOk&&kOk;
+  });
+  countEl.textContent=f.length+" 件";
+  listEl.innerHTML="";emptyEl.style.display=f.length?"none":"block";
+  f.forEach(x=>{
+    const div=document.createElement('div');div.className='item';
+    div.innerHTML=`<div class="ihead"><div><div class="ttl">${esc(x.t)}${x.b?'<span class="cb">CB推奨</span>':''}</div><div class="icat">${esc(x.c)}</div><div class="idesc">${esc(x.d)}</div></div><button class="copy">コピー</button></div><div class="cmd">${esc(x.m)}</div>`;
+    const cp=div.querySelector('.copy');
+    cp.onclick=async()=>{try{await navigator.clipboard.writeText(x.m);}catch(e){const ta=document.createElement('textarea');ta.value=x.m;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();}
+      cp.textContent="コピー済み ✓";cp.classList.add('done');setTimeout(()=>{cp.textContent="コピー";cp.classList.remove('done');},1300);};
+    listEl.appendChild(div);
+  });
+}
+render();
+</script>
+</body>
+</html>
