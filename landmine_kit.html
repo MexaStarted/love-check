@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<!--
+=================================================================
+  地雷回避 & 恋愛改善キット（特典）/ 恋愛地雷度診断
+  診断で出た「タイプ」を選ぶ → クセのケアチェック / NG→言い換え / 気持ち整理メモ。
+  【配布】GitHub Pages等に置きURLを記事に貼る or ファイル配布。自動保存・リセット可。
+  ※人を責めるものではありません。誰にでもあるクセに気づき、より良い恋をするための道具です。
+=================================================================
+-->
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>地雷回避 & 恋愛改善キット</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Shippori+Mincho:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#34121f;--bg2:#4a1626;--bg3:#1f0a14;--ink:#fff0f4;--muted:#d9a6b8;
+    --red:#ff5e7e;--red2:#ff8aa3;--orange:#ffb057;--gold:#ffd56b;--green:#7be0a3;
+    --panel:rgba(80,28,46,.5);--panel-br:rgba(255,120,150,.24);
+    --display:'Shippori Mincho',serif;--body:'Zen Maru Gothic',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--body);color:var(--ink);min-height:100vh;overflow-x:hidden;line-height:1.8;background:linear-gradient(160deg,#34121f,#4a1626 48%,#1f0a14)}
+  #fx{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .glow{position:fixed;border-radius:50%;filter:blur(60px);opacity:.4;z-index:0;pointer-events:none;background:radial-gradient(circle,var(--red),transparent 70%);animation:f 26s ease-in-out infinite}
+  .glow.b{background:radial-gradient(circle,var(--orange),transparent 70%);animation-duration:32s}
+  @keyframes f{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-40px)}}
+  .wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:0 18px 70px}
+  header{text-align:center;padding:56px 0 14px}
+  .eyebrow{font-size:.72rem;letter-spacing:.3em;color:var(--red2);margin-bottom:12px}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(1.7rem,5.6vw,2.5rem);line-height:1.34;text-shadow:0 0 28px rgba(255,94,126,.4)}
+  .lead{color:var(--muted);margin:14px auto 0;max-width:46ch;font-size:.98rem}
+  .card{background:var(--panel);border:1px solid var(--panel-br);border-radius:20px;padding:26px 22px;margin:22px 0;backdrop-filter:blur(8px);box-shadow:0 24px 70px -34px rgba(0,0,0,.7)}
+  h2{font-family:var(--display);font-weight:800;font-size:1.3rem;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+  h2 .d{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 12px var(--red)}
+  .note{color:var(--muted);font-size:.85rem;margin-bottom:16px}
+  .hidden{display:none}
+  .picker{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+  .pick{background:rgba(255,255,255,.06);border:1px solid var(--panel-br);border-radius:13px;padding:13px 8px;text-align:center;cursor:pointer;transition:.18s}
+  .pick:hover{background:rgba(255,94,126,.16);transform:translateY(-2px)}
+  .pick.sel{background:rgba(255,94,126,.3);border-color:var(--red)}
+  .pick .e{font-size:1.7rem}.pick .n{font-size:.74rem;color:var(--muted);margin-top:3px;line-height:1.3}
+  .change{background:transparent;border:none;color:var(--red2);cursor:pointer;font-size:.86rem;text-decoration:underline}
+  .me{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .me .big{font-size:3.2rem}.me .name{font-family:var(--display);font-size:1.5rem;color:var(--orange)}
+  .row2{background:rgba(255,255,255,.05);border:1px solid var(--panel-br);border-radius:12px;padding:13px 15px;margin:10px 0}
+  .row2 h3{font-family:var(--display);font-size:1rem;color:var(--red2);margin-bottom:4px}
+  .checks{display:grid;gap:9px}
+  .check{display:flex;align-items:flex-start;gap:12px;cursor:pointer;user-select:none;background:rgba(255,255,255,.05);border:1px solid var(--panel-br);border-radius:12px;padding:12px 14px;transition:.2s}
+  .check:hover{background:rgba(255,94,126,.14)}
+  .check.done{background:rgba(123,224,163,.12);border-color:rgba(123,224,163,.4)}
+  .cbox{flex:0 0 auto;width:22px;height:22px;border-radius:6px;border:2px solid #b06a82;display:grid;place-items:center;margin-top:2px;transition:.2s}
+  .check.done .cbox{background:var(--green);border-color:var(--green)}
+  .cbox svg{width:12px;height:12px;opacity:0;transition:.2s}.check.done .cbox svg{opacity:1}
+  .check .t{flex:1;font-size:.96rem}.check.done .t{color:var(--muted)}
+  .swap{display:grid;gap:10px}
+  .swapitem{background:rgba(255,255,255,.05);border:1px solid var(--panel-br);border-radius:12px;padding:13px 15px}
+  .swapitem .ng{color:var(--red2);font-size:.92rem}.swapitem .ng b{color:var(--red)}
+  .swapitem .ok{color:var(--green);font-size:.95rem;margin-top:6px}.swapitem .ok b{color:var(--green)}
+  textarea{background:rgba(31,10,20,.6);border:1px solid var(--panel-br);border-radius:12px;color:var(--ink);font-family:var(--body);font-size:.96rem;padding:12px 14px;width:100%;resize:vertical;min-height:80px}
+  textarea:focus{outline:none;border-color:var(--red)}
+  .save-btn{font-family:var(--body);font-weight:700;color:#34121f;background:linear-gradient(135deg,var(--red2),var(--orange));border:none;border-radius:999px;padding:11px 28px;cursor:pointer;transition:.25s;margin-top:8px}
+  .save-btn:hover{transform:translateY(-2px);filter:brightness(1.07)}
+  .flash{color:var(--gold);font-size:.82rem;opacity:0;transition:.3s;margin-left:12px}.flash.show{opacity:1}
+  .reset{margin-top:14px;background:transparent;border:1px solid var(--panel-br);color:var(--muted);padding:9px 20px;border-radius:999px;font-size:.84rem;cursor:pointer}
+  .reset:hover{background:rgba(255,255,255,.08)}
+  footer{text-align:center;color:var(--muted);font-size:.82rem;padding:10px 10px 50px;line-height:1.8}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+<div class="glow" style="width:300px;height:300px;top:8%;left:-70px"></div>
+<div class="glow b" style="width:320px;height:320px;top:62%;right:-80px"></div>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">LANDMINE CARE KIT</div>
+    <h1>地雷回避 &amp; 恋愛改善キット</h1>
+    <p class="lead">診断で出た「あなたのタイプ」を選ぶと、クセのケアチェック、やりがちNGの言い換え、気持ち整理メモが使えます。</p>
+  </header>
+  <section class="card" id="pickCard">
+    <h2><span class="d"></span>あなたのタイプを選ぶ</h2>
+    <p class="note">診断結果のタイプをタップ。（あとで変更もできます）</p>
+    <div class="picker" id="picker"></div>
+  </section>
+  <section class="card hidden" id="careCard">
+    <h2><span class="d"></span>あなたのタイプ <button class="change" id="changeBtn">変更</button></h2>
+    <div class="me" id="meHead"></div>
+    <div class="row2" id="traitBlock"></div>
+  </section>
+  <section class="card hidden" id="checkCard">
+    <h2><span class="d"></span>クセをやわらげる習慣チェック</h2>
+    <p class="note">あなたのタイプの“火種”をそっと減らす小さな習慣。チェックは自動保存されます。</p>
+    <div class="checks" id="checks"></div>
+  </section>
+  <section class="card hidden" id="swapCard">
+    <h2><span class="d"></span>やりがちNG → 言い換え集</h2>
+    <p class="note">同じ気持ちでも、伝え方を変えるだけで“地雷”が“かわいい甘え”に変わります。</p>
+    <div class="swap" id="swap"></div>
+  </section>
+  <section class="card hidden" id="memoCard">
+    <h2><span class="d"></span>気持ち整理メモ</h2>
+    <p class="note">モヤッとした時に、送る前に書く場所。一度ここに吐き出すと、衝動の連絡を防げます。（自動保存）</p>
+    <textarea id="memo" placeholder="例: 返信が来なくて不安。でも“追いLINE”は私のクセ。今日は一晩待ってみる。"></textarea>
+    <div><button class="save-btn" id="memoSave">保存する</button><span class="flash" id="flash">保存しました ✓</span></div>
+    <div style="margin-top:14px"><button class="reset" id="reset">保存データを消す</button></div>
+  </section>
+  <footer>※人を責めるものではありません。誰にでもあるクセに気づいて、より良い恋をするための前向きな道具です。</footer>
+</div>
+<script>
+const TYPES={
+ "safe":{e:"😇",t:"安心型",trait:"感情が安定し、相手を尊重できる人。一緒にいてラクと言われるタイプ。",
+   list:["相手の自由を尊重できた","自分の気持ちも素直に伝えた","不安より信頼を選べた"],
+   swap:[["返信が来ない","【NG】既読無視?何かした?","【OK】返信待ってるね、急がなくて大丈夫"]]},
+ "normal":{e:"🙂",t:"標準型",trait:"基本は穏やか。不安なときに少しクセが出る、誰にでもある範囲。",
+   list:["不安を感じたら一度深呼吸した","送る前に文面を読み返した","相手の状況を想像してみた"],
+   swap:[["不安なとき","【NG】なんで連絡くれないの?","【OK】声聞きたいな、落ち着いたら連絡ちょうだい"],
+         ["予定が合わない","【NG】私より仕事が大事なんだ","【OK】忙しいんだね、会えるの楽しみにしてる"]]},
+ "kamatte":{e:"😅",t:"かまってほしい型",trait:"好きになると相手が気になって仕方ない。連絡や態度に一喜一憂する情熱家。",
+   list:["追いLINEの前に一晩おいた","通知を何度も見るのをやめた","自分の楽しみの時間を作った","相手の沈黙を“拒否”と決めつけなかった"],
+   swap:[["返信が遅い","【NG】(連投)ねえ / 無視? / 怒ってる?","【OK】まとめて1通: 落ち着いたら返してね😊"],
+         ["寂しいとき","【NG】どうせ私のこと好きじゃないんでしょ","【OK】ちょっと甘えたい気分かも、声聞きたいな"]]},
+ "heavy":{e:"💣",t:"重ためロマンチスト型",trait:"愛が深すぎて束縛・嫉妬・重めの言動が出ることも。でも根は一途で真剣。",
+   list:["束縛の言葉を出す前に5秒待った","スマホ詮索の衝動を手放した","嫉妬を相手にぶつけず紙に書いた","“重さ”を自分の時間や趣味に変えた","相手を信じると一度決めた"],
+   swap:[["嫉妬したとき","【NG】さっきの異性誰?どういう関係?","【OK】ちょっとヤキモチ妬いちゃった、かわいいでしょ?"],
+         ["束縛したいとき","【NG】異性の友達とは会わないで","【OK】あなたが大事だから、たまに不安になるんだ"],
+         ["不安が爆発しそう","【NG】(長文の責めるLINE)","【OK】メモに全部書く→落ち着いてから一番大事な一言だけ伝える"]]}
+};
+const ORDER=["safe","normal","kamatte","heavy"];
+const KEY="love_landmine_kit_v1";
+let st=load();
+function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{type:null,checks:{},memo:""};}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+const picker=document.getElementById('picker');
+ORDER.forEach(code=>{const t=TYPES[code];const b=document.createElement('div');b.className='pick';
+  b.innerHTML=`<div class="e">${t.e}</div><div class="n">${t.t}</div>`;
+  b.onclick=()=>{st.type=code;if(!st.checks[code])st.checks[code]=t.list.map(()=>false);save();renderAll();window.scrollTo({top:document.getElementById('careCard').offsetTop-20,behavior:'smooth'});};
+  picker.appendChild(b);});
+document.getElementById('changeBtn').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
+function renderAll(){
+  if(!st.type)return;const code=st.type,t=TYPES[code];
+  ['careCard','checkCard','swapCard','memoCard'].forEach(id=>document.getElementById(id).classList.remove('hidden'));
+  [...picker.children].forEach((el,i)=>el.classList.toggle('sel',ORDER[i]===code));
+  document.getElementById('meHead').innerHTML=`<div class="big">${t.e}</div><div><div class="name">${t.t}</div></div>`;
+  document.getElementById('traitBlock').innerHTML=`<h3>🔍 あなたの恋愛のクセ</h3><p>${t.trait}</p>`;
+  const checks=document.getElementById('checks');checks.innerHTML='';
+  if(!st.checks[code]||st.checks[code].length!==t.list.length)st.checks[code]=t.list.map(()=>false);
+  t.list.forEach((item,i)=>{const d=document.createElement('div');d.className='check'+(st.checks[code][i]?' done':'');
+    d.innerHTML=`<div class="cbox"><svg viewBox="0 0 24 24" fill="none" stroke="#34121f" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="t">${item}</div>`;
+    d.onclick=()=>{st.checks[code][i]=!st.checks[code][i];save();renderAll();};checks.appendChild(d);});
+  const swap=document.getElementById('swap');swap.innerHTML='';
+  t.swap.forEach(s=>{const d=document.createElement('div');d.className='swapitem';
+    d.innerHTML=`<div class="ng">${s[0]}：${s[1].replace('【NG】','<b>NG</b> ')}</div><div class="ok">${s[2].replace('【OK】','<b>OK</b> ')}</div>`;swap.appendChild(d);});
+  document.getElementById('memo').value=st.memo||'';
+}
+document.getElementById('memoSave').onclick=()=>{st.memo=document.getElementById('memo').value;save();
+  const f=document.getElementById('flash');f.classList.add('show');setTimeout(()=>f.classList.remove('show'),1400);};
+document.getElementById('reset').onclick=()=>{if(confirm('選んだタイプ・チェック・メモをすべて消します。よろしいですか?')){
+  st={type:null,checks:{},memo:""};save();['careCard','checkCard','swapCard','memoCard'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  [...picker.children].forEach(el=>el.classList.remove('sel'));window.scrollTo({top:0,behavior:'smooth'});}};
+const cv=document.getElementById('fx'),cx=cv.getContext('2d');let ps=[];
+function rs(){cv.width=innerWidth;cv.height=innerHeight;}addEventListener('resize',rs);rs();
+function spawn(){return{x:Math.random()*cv.width,y:cv.height+20,s:Math.random()*12+6,sp:Math.random()*.6+.3,sw:Math.random()*1-.5,a:Math.random()*.4+.2,ph:Math.random()*6}}
+for(let i=0;i<22;i++){const h=spawn();h.y=Math.random()*cv.height;ps.push(h);}
+function heart(x,y,s,a){cx.save();cx.translate(x,y);cx.scale(s/16,s/16);cx.globalAlpha=a;cx.beginPath();cx.moveTo(0,4);cx.bezierCurveTo(-8,-4,-8,-12,0,-7);cx.bezierCurveTo(8,-12,8,-4,0,4);cx.fillStyle='#ff7e9c';cx.fill();cx.restore();}
+function loop(){cx.clearRect(0,0,cv.width,cv.height);for(const h of ps){h.y-=h.sp;h.ph+=.02;h.x+=h.sw+Math.sin(h.ph)*.3;heart(h.x,h.y,h.s,h.a*(.6+Math.sin(h.ph)*.4));if(h.y<-20)Object.assign(h,spawn());}requestAnimationFrame(loop);}
+loop();
+renderAll();
+</script>
+</body>
+</html>

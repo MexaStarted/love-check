@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<!--
+=================================================================
+  恋愛の地雷度診断メーカー / 記事冒頭・無料設置用
+  ─ シェアで広がる設計 ─
+  【設置】GitHub Pages等に置き、記事にURLを貼る。結果は保存・やり直し可。
+  ★シェア：下の SHARE_URL を拡散したいURL(note記事 or プロフィール)に。
+  ※「地雷」を人を貶める意味では使いません。誰にでもある“無意識のクセ”に
+   笑って気づき、直すきっかけにする、自己改善＆エンタメ診断です。
+=================================================================
+-->
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>恋愛の地雷度診断 ─ あなたの“無意識のクセ”は?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Shippori+Mincho:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#34121f;--bg2:#4a1626;--bg3:#1f0a14;--ink:#fff0f4;--muted:#d9a6b8;
+    --red:#ff5e7e;--red2:#ff8aa3;--orange:#ffb057;--gold:#ffd56b;--green:#7be0a3;
+    --panel:rgba(80,28,46,.5);--panel-br:rgba(255,120,150,.24);
+    --display:'Shippori Mincho',serif;--body:'Zen Maru Gothic',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--body);color:var(--ink);min-height:100vh;overflow-x:hidden;line-height:1.8;background:linear-gradient(160deg,#34121f,#4a1626 48%,#1f0a14)}
+  #fx{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .glow{position:fixed;border-radius:50%;filter:blur(60px);opacity:.4;z-index:0;pointer-events:none;background:radial-gradient(circle,var(--red),transparent 70%);animation:f 26s ease-in-out infinite}
+  .glow.b{background:radial-gradient(circle,var(--orange),transparent 70%);animation-duration:32s}
+  @keyframes f{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-40px)}}
+  .wrap{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:0 18px}
+  header{text-align:center;padding:60px 0 18px}
+  .eyebrow{font-size:.74rem;letter-spacing:.3em;color:var(--red2);margin-bottom:14px}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,7vw,3rem);line-height:1.3;text-shadow:0 0 28px rgba(255,94,126,.45)}
+  h1 em{font-style:normal;color:var(--orange)}
+  .lead{color:var(--muted);margin:16px auto 0;max-width:46ch;font-size:1rem}
+  .card{background:var(--panel);border:1px solid var(--panel-br);border-radius:22px;padding:28px 24px;margin:24px 0;backdrop-filter:blur(8px);box-shadow:0 24px 70px -34px rgba(0,0,0,.7)}
+  .start-btn,.share-btn,.retry{font-family:var(--body);font-weight:700;border:none;cursor:pointer;transition:.25s}
+  .start-btn{font-size:1.15rem;color:#34121f;background:linear-gradient(135deg,var(--red2),var(--orange));padding:15px 44px;border-radius:999px;box-shadow:0 14px 34px -12px rgba(255,94,126,.8)}
+  .start-btn:hover{transform:translateY(-3px);filter:brightness(1.06)}
+  .qwrap{display:none}
+  .progress{height:7px;background:rgba(255,255,255,.12);border-radius:99px;overflow:hidden;margin-bottom:8px}
+  .bar{height:100%;width:0;background:linear-gradient(90deg,var(--red),var(--gold));transition:width .4s ease}
+  .qcount{font-size:.8rem;color:var(--muted);text-align:right;margin-bottom:18px}
+  .qtext{font-family:var(--display);font-size:1.35rem;line-height:1.5;margin-bottom:22px;min-height:2.2em}
+  .opts{display:grid;gap:11px}
+  .opt{background:rgba(255,255,255,.06);border:1px solid var(--panel-br);border-radius:14px;padding:14px 18px;cursor:pointer;transition:.2s;font-size:1rem}
+  .opt:hover{background:rgba(255,94,126,.2);border-color:var(--red);transform:translateX(4px)}
+  .result{display:none;text-align:center}
+  .reveal{animation:pop .7s cubic-bezier(.2,.9,.3,1.4)}
+  @keyframes pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+  .meter{margin:10px auto 4px;max-width:420px}
+  .mtrack{height:22px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden;position:relative}
+  .mfill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#7be0a3,#ffd56b 50%,#ff5e7e);transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+  .bignum{font-family:var(--display);font-weight:800;font-size:4.6rem;line-height:1.1;margin-top:8px}
+  .bignum small{font-size:1.6rem}
+  .ptype{font-family:var(--display);font-size:1.7rem;color:var(--orange);margin-top:2px}
+  .rblock{text-align:left;background:rgba(255,255,255,.05);border:1px solid var(--panel-br);border-radius:14px;padding:16px 18px;margin:12px 0}
+  .rblock h3{font-family:var(--display);font-size:1.05rem;margin-bottom:6px;color:var(--red2)}
+  .rblock p{font-size:.97rem}
+  .rblock.good{border-color:rgba(123,224,163,.4);background:rgba(123,224,163,.08)}
+  .rblock.good h3{color:var(--green)}
+  .share-title{font-family:var(--display);font-size:1.1rem;margin:24px 0 12px}
+  .shares{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .share-btn{font-size:.98rem;color:#fff;padding:12px 22px;border-radius:999px}
+  .sb-x{background:#000}.sb-line{background:#06c755}.sb-copy{background:rgba(255,255,255,.14);border:1px solid var(--panel-br)}
+  .share-btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
+  .copied{font-size:.82rem;color:var(--gold);opacity:0;transition:.3s;margin-top:8px}.copied.show{opacity:1}
+  .cta{margin-top:22px;background:rgba(255,176,87,.1);border:1px solid rgba(255,176,87,.4);border-radius:14px;padding:16px 18px;font-size:.96rem}
+  .cta b{color:var(--orange)}
+  .retry{background:transparent;border:1px solid var(--panel-br);color:var(--muted);padding:10px 22px;border-radius:999px;font-size:.86rem;margin-top:18px}
+  .retry:hover{background:rgba(255,255,255,.08)}
+  footer{text-align:center;color:var(--muted);font-size:.8rem;padding:22px 10px 60px;line-height:1.7}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+<div class="glow" style="width:300px;height:300px;top:10%;left:-70px"></div>
+<div class="glow b" style="width:320px;height:320px;top:60%;right:-80px"></div>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">LOVE LANDMINE CHECK</div>
+    <h1>あなたの<em>恋愛地雷度</em>は<br>何％?</h1>
+    <p class="lead">誰にでもある“恋の無意識のクセ”を、12問でチェック。笑って気づいて、ちょっと直すきっかけに💣</p>
+  </header>
+  <div class="card" id="introCard" style="text-align:center">
+    <p style="margin-bottom:20px">正直に答えるほど当たります。責める診断じゃないから安心してね😌</p>
+    <button class="start-btn" id="startBtn">診断をはじめる</button>
+  </div>
+  <div class="card qwrap" id="qwrap">
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="qcount" id="qcount"></div>
+    <div class="qtext" id="qtext"></div>
+    <div class="opts" id="opts"></div>
+  </div>
+  <div class="card result" id="result"></div>
+  <footer>※「地雷」は人を責める意味では使っていません。誰にでもあるクセに気づいて、より良い恋をするための“遊び”の診断です。</footer>
+</div>
+<script>
+const SHARE_URL="https://note.com/famous_broom714";
+
+/* タイプ：地雷度スコア帯ごと */
+const TYPES=[
+ {max:20,emoji:"😇",name:"地雷ほぼゼロの安心型",
+   trait:"感情が安定していて、相手を尊重できる人。一緒にいてラクだと言われるタイプ。",
+   tip:"今のバランス感覚は宝物。たまには自分の気持ちも素直に出して、もっと深い関係に。",good:true},
+ {max:45,emoji:"🙂",name:"ときどき火種の標準型",
+   trait:"基本は穏やかだけど、不安なときに少しだけクセが出ることも。誰にでもある範囲。",
+   tip:"不安を感じた時の“ひと呼吸”を覚えると、ほぼ無敵。気づけている時点で優秀。",good:false},
+ {max:70,emoji:"😅",name:"扱い注意のかまってほしい型",
+   trait:"好きになると相手が気になって仕方ない。連絡や態度に一喜一憂しがちな情熱家。",
+   tip:"その愛情深さは長所。不安を相手にぶつける前に、一度自分を落ち着ける習慣を。",good:false},
+ {max:100,emoji:"💣",name:"取扱要注意の重ためロマンチスト型",
+   trait:"愛が深すぎて、つい束縛・嫉妬・重めの言動が出てしまうことも。でも根っこは一途で真剣。",
+   tip:"重さは“愛の大きさ”の裏返し。出す前に5秒。その一途さが、向け方次第で最高の魅力に。",good:false}
+];
+function typeOf(score){for(const t of TYPES){if(score<=t.max)return t;}return TYPES[TYPES.length-1];}
+
+/* 各回答に地雷ポイント(0=なし 〜 3=高め)。合計を100%換算 */
+const Q=[
+ {q:"好きな人からのLINEの返信が遅いと?",o:[["気にしない、来たら返す",0],["ちょっと気になる",1],["何かあった?とソワソワ",2],["既読つけて何で返さないの?と連投したくなる",3]]},
+ {q:"相手が異性と話していたら?",o:[["全然平気",0],["少し気になる程度",1],["モヤモヤする",2],["誰?どういう関係?と問い詰めたくなる",3]]},
+ {q:"恋人のスマホ、気になる?",o:[["まったく見ない",0],["気になるけど見ない",1],["正直チラ見したい",2],["こっそり見たことある/見たい",3]]},
+ {q:"返信が来ないと、どうする?",o:[["自分のことをして待つ",0],["たまに確認しちゃう",1],["何度も通知を見る",2],["追いLINEしてしまう",3]]},
+ {q:"恋人と喧嘩したとき",o:[["落ち着いて話し合う",0],["少し引きずる",1],["感情的になりがち",2],["既読無視や音信不通で反撃しがち",3]]},
+ {q:"相手の予定が自分優先じゃないと?",o:[["相手の時間も大事",0],["ちょっと寂しい",1],["なんで私(俺)より?と思う",2],["予定をキャンセルさせたくなる",3]]},
+ {q:"過去の恋愛は?",o:[["きれいに気持ちの整理がついてる",0],["たまに思い出す程度",1],["まだ少し引きずってる",2],["元恋人と比べてしまう/SNSを見ちゃう",3]]},
+ {q:"好きな人の前での感情の起伏は?",o:[["わりと安定",0],["普通",1],["けっこう上下する",2],["不安と嫉妬で激しく揺れる",3]]},
+ {q:"「好き」と言われる頻度",o:[["なくても信じられる",0],["たまにほしい",1],["こまめにほしい",2],["言われないと不安で確認しちゃう",3]]},
+ {q:"相手の交友関係に対して",o:[["自由でいいと思う",0],["把握はしたい",1],["できれば減らしてほしい",2],["異性の友達はやめてほしい",3]]},
+ {q:"デートのドタキャンをされたら",o:[["事情があるよねと流せる",0],["残念だけど我慢",1],["かなり落ち込む",2],["責めたり試すような態度を取りがち",3]]},
+ {q:"相手が他の人を褒めたら",o:[["気にしない",0],["ちょっと気になる",1],["少し不機嫌になる",2],["私(俺)はどうなの?と拗ねる",3]]},
+];
+
+let qi=0, pts=0;
+const introCard=document.getElementById('introCard'),qwrap=document.getElementById('qwrap'),resultEl=document.getElementById('result'),
+ bar=document.getElementById('bar'),qcount=document.getElementById('qcount'),qtext=document.getElementById('qtext'),opts=document.getElementById('opts');
+document.getElementById('startBtn').onclick=()=>{introCard.style.display='none';qwrap.style.display='block';renderQ();};
+function renderQ(){const cur=Q[qi];bar.style.width=(qi/Q.length*100)+'%';qcount.textContent=`Q ${qi+1} / ${Q.length}`;qtext.textContent=cur.q;opts.innerHTML='';
+  cur.o.forEach(([label,val])=>{const b=document.createElement('div');b.className='opt';b.textContent=label;
+    b.onclick=()=>{pts+=val;qi++;if(qi<Q.length)renderQ();else finish();};opts.appendChild(b);});}
+function finish(){bar.style.width='100%';
+  const score=Math.round(pts/(Q.length*3)*100); // 0-100
+  try{localStorage.setItem('love_landmine_result',JSON.stringify({score}));}catch(e){}
+  qwrap.style.display='none';showResult(score);}
+function showResult(score){
+  const t=typeOf(score);
+  resultEl.style.display='block';resultEl.classList.add('reveal');
+  const shareText=`私の恋愛地雷度は【${score}%】${t.emoji}「${t.name}」でした！\nあなたは何％?気になる人にもやらせてみて💣 #恋愛地雷度診断`;
+  const xUrl=`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText+"\n")}&url=${encodeURIComponent(SHARE_URL)}`;
+  const lineUrl=`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(SHARE_URL)}&text=${encodeURIComponent(shareText)}`;
+  resultEl.innerHTML=`
+    <div class="eyebrow" style="color:var(--red2)">YOUR LANDMINE LEVEL</div>
+    <div style="font-size:3rem">${t.emoji}</div>
+    <div class="bignum">${score}<small>%</small></div>
+    <div class="meter"><div class="mtrack"><div class="mfill" id="mfill"></div></div></div>
+    <div class="ptype">「${t.name}」</div>
+    <div class="rblock"><h3>🔍 あなたの恋愛のクセ</h3><p>${t.trait}</p></div>
+    <div class="rblock good"><h3>🌱 もっと愛されるヒント</h3><p>${t.tip}</p></div>
+    <div class="share-title">結果をシェアしよう（みんなの地雷度も気になる💣）</div>
+    <div class="shares">
+      <a class="share-btn sb-x" href="${xUrl}" target="_blank" rel="noopener">𝕏 でシェア</a>
+      <a class="share-btn sb-line" href="${lineUrl}" target="_blank" rel="noopener">LINEで送る</a>
+      <button class="share-btn sb-copy" id="copyBtn">🔗 リンクをコピー</button>
+    </div>
+    <div class="copied" id="copied">コピーしました！</div>
+    <div class="cta">🎁 <b>あなたのクセ別「地雷回避＆恋愛改善キット」</b>は記事の特典で。やりがちNGの言い換えや、気持ち整理メモが使えます。続きへどうぞ！</div>
+    <button class="retry" id="retryBtn">もう一度診断する</button>`;
+  setTimeout(()=>{document.getElementById('mfill').style.width=score+'%';},120);
+  document.getElementById('copyBtn').onclick=async()=>{const txt=shareText+"\n"+SHARE_URL;
+    try{await navigator.clipboard.writeText(txt);}catch(e){const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();}
+    const c=document.getElementById('copied');c.classList.add('show');setTimeout(()=>c.classList.remove('show'),1600);};
+  document.getElementById('retryBtn').onclick=()=>{qi=0;pts=0;resultEl.style.display='none';resultEl.classList.remove('reveal');qwrap.style.display='block';renderQ();window.scrollTo({top:0,behavior:'smooth'});};
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+/* ハート＆火花パーティクル */
+const cv=document.getElementById('fx'),cx=cv.getContext('2d');let ps=[];
+function rs(){cv.width=innerWidth;cv.height=innerHeight;}addEventListener('resize',rs);rs();
+function spawn(){return{x:Math.random()*cv.width,y:cv.height+20,s:Math.random()*12+6,sp:Math.random()*.6+.3,sw:Math.random()*1-.5,a:Math.random()*.4+.2,ph:Math.random()*6}}
+for(let i=0;i<24;i++){const h=spawn();h.y=Math.random()*cv.height;ps.push(h);}
+function heart(x,y,s,a){cx.save();cx.translate(x,y);cx.scale(s/16,s/16);cx.globalAlpha=a;cx.beginPath();cx.moveTo(0,4);cx.bezierCurveTo(-8,-4,-8,-12,0,-7);cx.bezierCurveTo(8,-12,8,-4,0,4);cx.fillStyle='#ff7e9c';cx.fill();cx.restore();}
+function loop(){cx.clearRect(0,0,cv.width,cv.height);for(const h of ps){h.y-=h.sp;h.ph+=.02;h.x+=h.sw+Math.sin(h.ph)*.3;heart(h.x,h.y,h.s,h.a*(.6+Math.sin(h.ph)*.4));if(h.y<-20)Object.assign(h,spawn());}requestAnimationFrame(loop);}
+loop();
+</script>
+</body>
+</html>
