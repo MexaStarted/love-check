@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<!--
+=================================================================
+  Claude 仕事別 プロンプト生成ツール（特典）
+  目的を選ぶ→項目を埋める→そのまま使える“強いプロンプト”が完成→コピー。
+  【配布】GitHub Pages等に置きURLを記事に貼る or ファイル配布。
+  入力内容はブラウザに自動保存（端末内のみ）。
+=================================================================
+-->
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude 仕事別 プロンプト生成ツール</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Shippori+Mincho:wght@600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#2a1d14;--bg2:#1d140d;--bg3:#120c07;--ink:#f5ece0;--muted:#bda892;
+    --clay:#d97757;--clay2:#e8916f;--cream:#e8c89a;--gold:#ffd9a0;
+    --panel:rgba(60,42,30,.5);--panel-br:rgba(217,119,87,.28);
+    --display:'Shippori Mincho',serif;--body:'Zen Maru Gothic',sans-serif;--mono:'JetBrains Mono',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--body);color:var(--ink);min-height:100vh;overflow-x:hidden;line-height:1.8;
+    background:linear-gradient(160deg,#2a1d14,#1d140d 50%,#120c07)}
+  #sp{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .glow{position:fixed;border-radius:50%;filter:blur(60px);opacity:.35;z-index:0;pointer-events:none;
+    background:radial-gradient(circle,var(--clay),transparent 70%);animation:f 26s ease-in-out infinite}
+  .glow.b{background:radial-gradient(circle,var(--cream),transparent 70%);animation-duration:32s}
+  @keyframes f{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-40px)}}
+  .wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:0 18px 70px}
+
+  header{text-align:center;padding:56px 0 14px}
+  .eyebrow{font-size:.72rem;letter-spacing:.3em;color:var(--clay2);margin-bottom:12px}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(1.8rem,6vw,2.6rem);line-height:1.34;text-shadow:0 0 26px rgba(217,119,87,.35)}
+  .lead{color:var(--muted);margin:14px auto 0;max-width:46ch;font-size:.98rem}
+
+  .card{background:var(--panel);border:1px solid var(--panel-br);border-radius:20px;padding:26px 22px;margin:22px 0;backdrop-filter:blur(8px);box-shadow:0 24px 70px -34px rgba(0,0,0,.7)}
+  h2{font-family:var(--display);font-weight:800;font-size:1.3rem;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+  h2 .d{width:8px;height:8px;border-radius:50%;background:var(--clay);box-shadow:0 0 12px var(--clay)}
+  .note{color:var(--muted);font-size:.85rem;margin-bottom:16px}
+
+  .tasks{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .task{background:rgba(255,255,255,.05);border:1px solid var(--panel-br);border-radius:13px;padding:14px;cursor:pointer;transition:.18s;text-align:center}
+  .task:hover{background:rgba(217,119,87,.16);transform:translateY(-2px)}
+  .task.sel{background:rgba(217,119,87,.3);border-color:var(--clay)}
+  .task .e{font-size:1.6rem}
+  .task .n{font-weight:700;margin-top:4px;font-size:.96rem}
+  .task .s{color:var(--muted);font-size:.78rem;margin-top:2px}
+
+  .hidden{display:none}
+  label{display:block;font-size:.85rem;color:var(--muted);margin:14px 0 6px}
+  input,textarea,select{width:100%;background:rgba(18,12,7,.6);border:1px solid var(--panel-br);border-radius:10px;color:var(--ink);font-family:var(--body);font-size:.96rem;padding:11px 13px}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--clay)}
+  textarea{resize:vertical;min-height:64px}
+
+  .out{background:#140d07;border:1px solid var(--panel-br);border-radius:14px;margin-top:10px;overflow:hidden}
+  .outhead{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--panel-br)}
+  .outhead .t{font-family:var(--mono);font-size:.74rem;color:var(--clay2)}
+  .copy{font-family:var(--body);font-weight:700;font-size:.86rem;color:#fff;background:var(--clay);border:none;border-radius:8px;padding:8px 18px;cursor:pointer;transition:.18s}
+  .copy:hover{filter:brightness(1.08);transform:translateY(-1px)}
+  .copy.done{background:#3fb950}
+  pre{font-family:var(--mono);font-size:.84rem;color:#e8dccb;padding:16px;white-space:pre-wrap;line-height:1.65}
+
+  .tipbox{background:rgba(255,217,160,.08);border:1px solid rgba(255,217,160,.35);border-radius:12px;padding:14px 16px;font-size:.9rem;margin-top:14px}
+  .tipbox b{color:var(--gold)}
+  footer{text-align:center;color:var(--muted);font-size:.8rem;padding:10px 10px 40px;line-height:1.7}
+</style>
+</head>
+<body>
+<canvas id="sp"></canvas>
+<div class="glow" style="width:300px;height:300px;top:8%;left:-70px"></div>
+<div class="glow b" style="width:320px;height:320px;top:60%;right:-80px"></div>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">CLAUDE PROMPT GENERATOR</div>
+    <h1>仕事別 プロンプト生成ツール</h1>
+    <p class="lead">やりたいことを選んで、空欄を埋めるだけ。そのままClaudeに貼れる“強いプロンプト”が完成します。</p>
+  </header>
+
+  <section class="card" id="taskCard">
+    <h2><span class="d"></span>① やりたいことを選ぶ</h2>
+    <div class="tasks" id="tasks"></div>
+  </section>
+
+  <section class="card hidden" id="formCard">
+    <h2><span class="d"></span>② 空欄を埋める</h2>
+    <p class="note" id="formNote"></p>
+    <div id="fields"></div>
+  </section>
+
+  <section class="card hidden" id="outCard">
+    <h2><span class="d"></span>③ 完成したプロンプト</h2>
+    <p class="note">下のコピーを押して、Claude（claude.ai）に貼り付けてください。空欄のままでも動きます。</p>
+    <div class="out">
+      <div class="outhead"><span class="t">PROMPT</span><button class="copy" id="copyBtn">コピー</button></div>
+      <pre id="output"></pre>
+    </div>
+    <div class="tipbox" id="tip"></div>
+  </section>
+
+  <footer>使い方のコツ：出力がイマイチなら「もっと短く」「3案出して」「なぜそうしたか説明して」と追い打ちを。<br>Claudeは会話の往復で精度が上がります。</footer>
+</div>
+
+<script>
+// 各タスク：フィールド定義＋テンプレ（{key}を差し込み）＋ヒント
+const TASKS=[
+ {id:"blog",e:"✍️",n:"ブログ記事",s:"記事の下書きを作る",
+  fields:[{k:"theme",l:"記事のテーマ",ph:"例: 初心者向けの家計簿アプリの選び方"},
+          {k:"reader",l:"想定読者",ph:"例: 節約を始めたい20〜30代"},
+          {k:"tone",l:"トーン",ph:"例: 親しみやすく、でも信頼感のある"},
+          {k:"len",l:"文字数の目安",ph:"例: 2000字"}],
+  tmpl:`あなたはプロのライターです。以下の条件でブログ記事を書いてください。
+
+# テーマ
+{theme}
+
+# 想定読者
+{reader}
+
+# 条件
+- トーン: {tone}
+- 文字数: {len}程度
+- 読者の悩み→解決→次の一歩 の流れで構成する
+- 見出し(H2/H3)を付け、最初の3行で読者の心をつかむ
+- 専門用語はかみ砕いて説明する
+
+まず構成（見出し）案を出してから、本文を書いてください。`,
+  tip:"<b>コツ:</b> 一度に完璧を求めず、まず構成を出させてOKを出してから本文へ。"},
+
+ {id:"sns",e:"📱",n:"SNS投稿",s:"投稿文・ネタを作る",
+  fields:[{k:"platform",l:"プラットフォーム",ph:"例: X（旧Twitter）"},
+          {k:"topic",l:"テーマ・伝えたいこと",ph:"例: 副業で時間を作るコツ"},
+          {k:"goal",l:"目的",ph:"例: 保存されたい / プロフへ誘導したい"}],
+  tmpl:`あなたは人気SNS運用者です。以下の投稿を作ってください。
+
+# プラットフォーム
+{platform}
+
+# テーマ
+{topic}
+
+# 目的
+{goal}
+
+# 条件
+- 最初の1行で手を止めるフックにする
+- {platform}の文化に合った長さ・改行・トーン
+- 投稿案を3パターン、切り口を変えて出す
+- それぞれに合うハッシュタグ案も添える`,
+  tip:"<b>コツ:</b> 「フックだけ10案出して」と頼むと、一番伸びそうな書き出しを選べます。"},
+
+ {id:"mail",e:"📧",n:"ビジネスメール",s:"メールを整える",
+  fields:[{k:"situation",l:"状況・送りたい相手",ph:"例: 取引先への納期遅れのお詫び"},
+          {k:"point",l:"伝えたい要点",ph:"例: 3日遅れる、代替案あり"},
+          {k:"tone",l:"トーン",ph:"例: 丁寧だが堅すぎない"}],
+  tmpl:`あなたはビジネスメールのプロです。以下のメールを作ってください。
+
+# 状況・相手
+{situation}
+
+# 伝えたい要点
+{point}
+
+# 条件
+- トーン: {tone}
+- 結論を先に、簡潔に（200字程度）
+- 言い訳がましくせず、誠実に
+- 件名も付ける`,
+  tip:"<b>コツ:</b> 自分の下書きを貼って「丁寧に整えて」と頼むのも高精度です。"},
+
+ {id:"idea",e:"💡",n:"アイデア出し",s:"企画・案を量産",
+  fields:[{k:"topic",l:"考えたいテーマ",ph:"例: 30代向けの新しい副業"},
+          {k:"count",l:"出したい数",ph:"例: 20"},
+          {k:"angle",l:"重視したい視点（任意）",ph:"例: 初期費用ゼロで始められる"}],
+  tmpl:`あなたは発想力豊かな企画のプロです。
+
+# テーマ
+{topic}
+
+# お願い
+- アイデアを{count}個、箇条書きで出してください
+- 平凡なものも含めて、まず量を重視
+- 重視したい視点: {angle}
+- 出し終えたら、特に有望な3つとその理由を教えてください`,
+  tip:"<b>コツ:</b> 「もっと尖った案を」「逆に手堅い案を」と方向を指定すると幅が出ます。"},
+
+ {id:"summary",e:"📚",n:"要約・整理",s:"長文をまとめる",
+  fields:[{k:"goal",l:"何のための要約か",ph:"例: 会議で報告するため"},
+          {k:"format",l:"出力形式",ph:"例: 3行 / 箇条書き5点 / 表"}],
+  tmpl:`以下の文章を要約してください。
+
+# 目的
+{goal}
+
+# 出力形式
+{format}
+
+# 条件
+- 結論を最初に置く
+- 専門用語はかみ砕く
+- 元文の重要な数字・固有名詞は残す
+
+# 対象の文章
+（ここに要約したい文章を貼ってください）`,
+  tip:"<b>コツ:</b> 「この要約で抜けている重要点はある?」と聞くと精度が上がります。"},
+
+ {id:"learn",e:"🎓",n:"勉強・解説",s:"わかりやすく教わる",
+  fields:[{k:"topic",l:"学びたいこと",ph:"例: NISAの仕組み"},
+          {k:"level",l:"自分のレベル",ph:"例: まったくの初心者"}],
+  tmpl:`あなたは教えるのが上手な先生です。
+
+# 学びたいこと
+{topic}
+
+# 私のレベル
+{level}
+
+# お願い
+- 予備知識ゼロでもわかるよう、たとえ話を使って説明
+- 専門用語は使うたびに言い換えを添える
+- 最後に、理解度を確認する質問を3つ出してください`,
+  tip:"<b>コツ:</b> 「小学生にもわかるように」と足すと、ぐっと噛み砕いてくれます。"},
+
+ {id:"plan",e:"🗂️",n:"計画・段取り",s:"やることを整理",
+  fields:[{k:"goal",l:"達成したいこと",ph:"例: 1か月で副業の初収益を出す"},
+          {k:"time",l:"使える時間・条件",ph:"例: 平日夜1時間、休日3時間"}],
+  tmpl:`あなたは優秀なコーチです。以下の目標を、実行できる計画に落とし込んでください。
+
+# 目標
+{goal}
+
+# 使える時間・条件
+{time}
+
+# お願い
+- 今日からできる小さなステップに分解
+- 最初の一歩は特に小さく
+- つまずきやすいポイントと対策も添える
+- 週ごとのマイルストーンを示す`,
+  tip:"<b>コツ:</b> 「最初の1週間だけ詳しく」と頼むと、すぐ動き出せます。"},
+
+ {id:"review",e:"🔍",n:"添削・改善",s:"自分の文章を磨く",
+  fields:[{k:"what",l:"何を見てほしいか",ph:"例: プロフィール文 / 提案書"},
+          {k:"focus",l:"重視する観点",ph:"例: 信頼感 / わかりやすさ"}],
+  tmpl:`あなたは優秀な編集者です。以下の文章にフィードバックをください。
+
+# 見てほしいもの
+{what}
+
+# 重視する観点
+{focus}
+
+# お願い
+- 良い点は簡潔に、改善点を具体的に3つ
+- それぞれ「どう直すか」の例も示す
+- 最後に、改善版を1つ書いてください
+
+# 対象の文章
+（ここに貼ってください）`,
+  tip:"<b>コツ:</b> 「辛口で」と頼むと遠慮なく改善点を出してくれます。"}
+];
+
+const tasksEl=document.getElementById('tasks');
+const KEY="claude_promptgen_v1";
+let saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||"{}");}catch(e){}
+let current=null;
+
+TASKS.forEach(t=>{
+  const b=document.createElement('div');b.className='task';
+  b.innerHTML=`<div class="e">${t.e}</div><div class="n">${t.n}</div><div class="s">${t.s}</div>`;
+  b.onclick=()=>{current=t.id;[...tasksEl.children].forEach(x=>x.classList.remove('sel'));b.classList.add('sel');renderForm(t);
+    window.scrollTo({top:document.getElementById('formCard').offsetTop-20,behavior:'smooth'});};
+  tasksEl.appendChild(b);
+});
+
+function renderForm(t){
+  document.getElementById('formCard').classList.remove('hidden');
+  document.getElementById('outCard').classList.remove('hidden');
+  document.getElementById('formNote').textContent="埋めるほど精度が上がります。空欄でもOK（その部分は自分でClaudeに伝えてください）。";
+  const fEl=document.getElementById('fields');fEl.innerHTML='';
+  (saved[t.id]=saved[t.id]||{});
+  t.fields.forEach(f=>{
+    const wrap=document.createElement('div');
+    const big=(f.k==='situation'||f.k==='point'||f.k==='topic'||f.k==='theme');
+    wrap.innerHTML=`<label>${f.l}</label>`+(big?`<textarea data-k="${f.k}" placeholder="${f.ph}">${esc(saved[t.id][f.k]||'')}</textarea>`:`<input data-k="${f.k}" placeholder="${f.ph}" value="${esc(saved[t.id][f.k]||'')}">`);
+    fEl.appendChild(wrap);
+  });
+  fEl.querySelectorAll('[data-k]').forEach(inp=>inp.addEventListener('input',()=>{
+    saved[t.id][inp.dataset.k]=inp.value;persist();build(t);
+  }));
+  document.getElementById('tip').innerHTML=t.tip;
+  build(t);
+}
+function build(t){
+  let out=t.tmpl;
+  t.fields.forEach(f=>{
+    const v=(saved[t.id]&&saved[t.id][f.k])?saved[t.id][f.k]:("【"+f.l+"】");
+    out=out.split("{"+f.k+"}").join(v);
+  });
+  document.getElementById('output').textContent=out;
+}
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(saved));}catch(e){}}
+
+document.getElementById('copyBtn').onclick=async()=>{
+  const txt=document.getElementById('output').textContent;
+  try{await navigator.clipboard.writeText(txt);}catch(e){const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();}
+  const b=document.getElementById('copyBtn');b.textContent="コピー済み ✓";b.classList.add('done');setTimeout(()=>{b.textContent="コピー";b.classList.remove('done');},1400);
+};
+
+/* sparkle particles */
+const cv=document.getElementById('sp'),cx=cv.getContext('2d');let ps=[];
+function rs(){cv.width=innerWidth;cv.height=innerHeight;}addEventListener('resize',rs);rs();
+function spawn(){return{x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.6+.4,p:Math.random()*6,sp:Math.random()*.02+.005}}
+for(let i=0;i<90;i++)ps.push(spawn());
+function loop(){cx.clearRect(0,0,cv.width,cv.height);for(const p of ps){p.p+=p.sp;const a=.3+Math.sin(p.p)*.3;
+  cx.beginPath();cx.arc(p.x,p.y,p.r,0,7);cx.fillStyle='rgba(255,210,170,'+a+')';cx.fill();}requestAnimationFrame(loop);}
+loop();
+</script>
+</body>
+</html>
