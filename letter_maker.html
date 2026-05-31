@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<!--
+=================================================================
+  花嫁の手紙メーカー（特典）
+  項目を埋める → 定番の構成に沿った手紙の下書きが完成 → コピー。
+  文字数・読み上げ時間の目安つき（本番の目安は2〜3分）。
+  【配布】GitHub Pages等に置きURLを記事に貼る or ファイル配布。入力は自動保存・リセット可。
+  ※「両親へ」を前提に固定せず、育ててくれた人・大切な人に置き換えて使えます。
+=================================================================
+-->
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>花嫁の手紙メーカー</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Shippori+Mincho:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#fbf7f4;--bg2:#f6eeeb;--ink:#4a3a34;--muted:#9a8a82;
+    --rose:#d28c78;--rose2:#e0a594;--gold:#c2a06a;--cream:#fff;
+    --panel:#ffffff;--panel-br:#ecdcd4;
+    --display:'Shippori Mincho',serif;--body:'Zen Maru Gothic',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--body);color:var(--ink);min-height:100vh;line-height:1.9;
+    background:linear-gradient(165deg,#fbf7f4,#f6eeeb 60%,#f1e6e2)}
+  .glow{position:fixed;border-radius:50%;filter:blur(70px);opacity:.5;z-index:0;pointer-events:none;background:radial-gradient(circle,#f0cdbc,transparent 70%)}
+  .wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:0 18px 70px}
+  header{text-align:center;padding:54px 0 12px}
+  .eyebrow{font-size:.72rem;letter-spacing:.3em;color:var(--gold);margin-bottom:12px}
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,5.6vw,2.5rem);line-height:1.34;color:#5a463e}
+  .lead{color:var(--muted);margin:14px auto 0;max-width:46ch;font-size:.97rem}
+  .card{background:var(--panel);border:1px solid var(--panel-br);border-radius:18px;padding:26px 22px;margin:20px 0;box-shadow:0 20px 50px -34px rgba(120,80,60,.4)}
+  h2{font-family:var(--display);font-weight:700;font-size:1.2rem;margin-bottom:4px;display:flex;align-items:center;gap:10px;color:#5a463e}
+  h2 .d{width:8px;height:8px;border-radius:50%;background:var(--rose);box-shadow:0 0 10px var(--rose2)}
+  .note{color:var(--muted);font-size:.84rem;margin-bottom:14px}
+  label{display:block;font-size:.84rem;color:var(--muted);margin:14px 0 6px}
+  input,textarea,select{width:100%;background:#fffdfc;border:1px solid var(--panel-br);border-radius:10px;color:var(--ink);font-family:var(--body);font-size:.96rem;padding:11px 13px}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--rose)}
+  textarea{resize:vertical;min-height:62px}
+  .hint{font-size:.78rem;color:#bcaaa0;margin-top:4px}
+  .out{background:#fffdfb;border:1px solid var(--panel-br);border-radius:14px;margin-top:8px;overflow:hidden}
+  .outhead{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--panel-br);flex-wrap:wrap;gap:8px}
+  .meta{font-size:.78rem;color:var(--muted)}
+  .meta b{color:var(--rose)}
+  .copy{font-family:var(--body);font-weight:700;font-size:.86rem;color:#fff;background:var(--rose);border:none;border-radius:8px;padding:9px 20px;cursor:pointer;transition:.18s}
+  .copy:hover{filter:brightness(1.06);transform:translateY(-1px)}
+  .copy.done{background:#6cae7e}
+  pre{font-family:var(--display);font-size:1rem;color:#4a3a34;padding:20px;white-space:pre-wrap;line-height:2.05}
+  .save-btn{font-family:var(--body);font-weight:700;color:#fff;background:linear-gradient(135deg,var(--rose2),var(--rose));border:none;border-radius:999px;padding:11px 28px;cursor:pointer;transition:.25s}
+  .save-btn:hover{transform:translateY(-2px);filter:brightness(1.05)}
+  .tipbox{background:#fbf0ec;border:1px solid #efd9d1;border-radius:12px;padding:14px 16px;font-size:.9rem;margin-top:8px;color:#7a5f56}
+  .tipbox b{color:var(--rose)}
+  .reset{margin-top:14px;background:transparent;border:1px solid var(--panel-br);color:var(--muted);padding:9px 20px;border-radius:999px;font-size:.84rem;cursor:pointer}
+  .reset:hover{background:#f6eeeb}
+  footer{text-align:center;color:var(--muted);font-size:.8rem;padding:10px 10px 40px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="glow" style="width:340px;height:340px;top:6%;right:-60px"></div>
+<div class="glow" style="width:300px;height:300px;top:70%;left:-70px"></div>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">BRIDE'S LETTER MAKER</div>
+    <h1>花嫁の手紙メーカー</h1>
+    <p class="lead">項目を埋めるだけで、定番の構成に沿った手紙の下書きが完成します。あとは自分の言葉で整えるだけ。</p>
+  </header>
+
+  <section class="card">
+    <h2><span class="d"></span>あなたのことを教えてください</h2>
+    <p class="note">空欄があっても下書きは作れます。埋めるほど“あなたらしい”手紙になります。（自動保存）</p>
+
+    <label>手紙を贈る相手の呼び方</label>
+    <input id="to" placeholder="例: お父さん、お母さん／おばあちゃん／育ててくれたみんな">
+    <div class="hint">ご家庭はそれぞれ。育ててくれた方・大切な方に置き換えてOKです。</div>
+
+    <label>子どもの頃の思い出（ひとつ）</label>
+    <textarea id="ep1" placeholder="例: 熱を出した夜、一晩中ずっとそばにいてくれたこと"></textarea>
+
+    <label>「ありがとう」と伝えたいこと</label>
+    <textarea id="ep2" placeholder="例: わがままばかりの私を、いつも信じて見守ってくれたこと"></textarea>
+
+    <label>ちょっと笑える・照れくさいエピソード（任意）</label>
+    <textarea id="ep3" placeholder="例: 反抗期にひどいことを言ったのに、翌朝には普通にご飯を作ってくれた"></textarea>
+
+    <label>これから一緒に歩むパートナーの呼び方</label>
+    <input id="partner" placeholder="例: ◯◯さん／彼">
+
+    <label>パートナーや新生活への想い（任意）</label>
+    <textarea id="future" placeholder="例: 二人で温かい家庭を築いていきます"></textarea>
+
+    <label>結びの言葉に添えたい一言（任意）</label>
+    <input id="closing" placeholder="例: これからもずっと、大好きです">
+
+    <div style="margin-top:16px"><button class="save-btn" id="build">手紙を作成 / 更新</button></div>
+  </section>
+
+  <section class="card">
+    <h2><span class="d"></span>あなたの手紙（下書き）</h2>
+    <div class="out">
+      <div class="outhead">
+        <span class="meta">文字数 <b id="chars">0</b> ／ 読み上げ目安 <b id="time">0分0秒</b><span style="color:#c9b8b0"> （本番の目安は2〜3分）</span></span>
+        <button class="copy" id="copy">コピー</button>
+      </div>
+      <pre id="output"></pre>
+    </div>
+    <div class="tipbox" id="tip"><b>読み方のコツ：</b> 本番はゆっくり、感情を込めて。緊張で早口になりがちなので、声に出して一度練習を。詰まっても大丈夫、その間も伝わります。</div>
+    <div style="text-align:center"><button class="reset" id="reset">入力をすべて消す</button></div>
+  </section>
+
+  <footer>※これは下書き作成の補助ツールです。最後はあなた自身の言葉で整えると、いちばん心に届きます。</footer>
+</div>
+<script>
+const KEY="bride_letter_v1";
+const FIELDS=["to","ep1","ep2","ep3","partner","future","closing"];
+let st=load();
+function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{};}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+FIELDS.forEach(f=>{const el=document.getElementById(f);el.value=st[f]||"";el.addEventListener('input',()=>{st[f]=el.value;save();build();});});
+
+function v(id,fallback){const x=(st[id]||"").trim();return x||fallback;}
+function build(){
+  const to=v("to","お父さん、お母さん");
+  const ep1=st.ep1?st.ep1.trim():"";
+  const ep2=st.ep2?st.ep2.trim():"";
+  const ep3=st.ep3?st.ep3.trim():"";
+  const partner=v("partner","これからの人生をともにする人");
+  const future=st.future?st.future.trim():"";
+  const closing=st.closing?st.closing.trim():"";
+
+  let p=[];
+  p.push(`${to}へ`);
+  p.push("");
+  p.push("今日まで育ててくれて、本当にありがとう。こうして手紙にすると照れくさいけれど、今しか言えない気持ちを、聞いてください。");
+  if(ep1) p.push(`覚えていますか。${ep1}。あの頃の私は気づかなかったけれど、今ならわかります。たくさんの愛情に包まれて、私は大きくなりました。`);
+  if(ep2) p.push(`そして、何より伝えたいのは——${ep2}。当たり前のように受け取っていたその優しさに、心から感謝しています。`);
+  if(ep3) p.push(`思い返すと、${ep3}。そんなことも、今ではかけがえのない宝物です。`);
+  p.push(`これから私は、${partner}とともに新しい人生を歩んでいきます。`);
+  if(future) p.push(`${future}。二人で、あなたたちが見せてくれたような、温かい家庭を作っていきたいと思います。`);
+  p.push("これからは、私が支える番です。どうか、いつまでも元気でいてください。");
+  p.push(closing ? closing : "本当に、ありがとう。これからもよろしくお願いします。");
+
+  const text=p.join("\n");
+  document.getElementById('output').textContent=text;
+  const len=text.replace(/\s/g,'').length;
+  document.getElementById('chars').textContent=len;
+  // reading speed ~ 300 chars/min for heartfelt slow reading
+  const sec=Math.round(len/300*60);
+  document.getElementById('time').textContent=Math.floor(sec/60)+"分"+(sec%60)+"秒";
+}
+document.getElementById('build').onclick=build;
+document.getElementById('copy').onclick=async()=>{const t=document.getElementById('output').textContent;
+  try{await navigator.clipboard.writeText(t);}catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();}
+  const b=document.getElementById('copy');b.textContent="コピーしました ✓";b.classList.add('done');setTimeout(()=>{b.textContent="コピー";b.classList.remove('done');},1500);};
+document.getElementById('reset').onclick=()=>{if(confirm("入力した内容をすべて消します。よろしいですか?")){st={};save();FIELDS.forEach(f=>document.getElementById(f).value="");build();}};
+build();
+</script>
+</body>
+</html>
