@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<!--
+═══════════════════════════════════════════════════════════════
+  恋愛タイプ診断メーカー（16動物タイプ）/ 記事冒頭・無料設置用
+  ─ シェアで広がる設計 ─
+
+  【配布・設置】このファイル(.html)をブラウザで開くだけ。インストール不要。
+  結果はその端末のブラウザに保存され、やり直しも可能。
+
+  ★シェアリンクの設定★
+   下の SHARE_URL を、あなたが拡散したいURL（note記事 or プロフィール）に
+   変更してください。初期値はプロフィールリンクにしてあります。
+═══════════════════════════════════════════════════════════════
+-->
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>恋愛タイプ診断 ─ あなたは何の動物?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Shippori+Mincho:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#2a1230;--bg2:#3d1838;--bg3:#1a0a24;
+    --ink:#fff3f8;--muted:#d6a9c4;
+    --rose:#ff6fae;--rose2:#ff9ec9;--gold:#ffd9a0;--plum:#b56cff;
+    --panel:rgba(70,30,70,.42);--panel-br:rgba(255,150,200,.22);
+    --display:'Shippori Mincho',serif;--body:'Zen Maru Gothic',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--body);color:var(--ink);min-height:100vh;overflow-x:hidden;line-height:1.85;
+    background:linear-gradient(160deg,#2a1230,#3d1838 45%,#1a0a24);}
+  #hearts{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .glow{position:fixed;border-radius:50%;filter:blur(60px);opacity:.4;z-index:0;pointer-events:none;
+    background:radial-gradient(circle,var(--rose),transparent 70%);animation:float 24s ease-in-out infinite}
+  .glow.b{background:radial-gradient(circle,var(--plum),transparent 70%);animation-duration:30s}
+  @keyframes float{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-40px)}}
+  .wrap{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:0 18px}
+
+  header{text-align:center;padding:64px 0 20px}
+  .eyebrow{font-size:.74rem;letter-spacing:.3em;color:var(--rose2);margin-bottom:14px}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,7vw,3.1rem);line-height:1.3;
+     text-shadow:0 0 26px rgba(255,111,174,.4)}
+  h1 em{font-style:normal;color:var(--rose)}
+  .lead{color:var(--muted);margin:16px auto 0;max-width:46ch;font-size:1rem}
+
+  .card{background:var(--panel);border:1px solid var(--panel-br);border-radius:22px;
+    padding:28px 24px;margin:24px 0;backdrop-filter:blur(8px);box-shadow:0 24px 70px -34px rgba(0,0,0,.7)}
+
+  .start-btn,.share-btn,.retry{font-family:var(--body);font-weight:700;border:none;cursor:pointer;transition:.25s}
+  .start-btn{font-size:1.15rem;color:#3d1838;background:linear-gradient(135deg,var(--rose2),var(--rose));
+    padding:15px 44px;border-radius:999px;box-shadow:0 14px 34px -12px rgba(255,111,174,.9)}
+  .start-btn:hover{transform:translateY(-3px);filter:brightness(1.06)}
+
+  /* 質問 */
+  .qwrap{display:none}
+  .progress{height:7px;background:rgba(255,255,255,.12);border-radius:99px;overflow:hidden;margin-bottom:8px}
+  .bar{height:100%;width:0;background:linear-gradient(90deg,var(--rose),var(--gold));transition:width .4s ease}
+  .qcount{font-size:.8rem;color:var(--muted);text-align:right;margin-bottom:18px}
+  .qtext{font-family:var(--display);font-size:1.4rem;line-height:1.5;margin-bottom:22px;min-height:2.2em}
+  .opts{display:grid;gap:12px}
+  .opt{background:rgba(255,255,255,.06);border:1px solid var(--panel-br);border-radius:14px;
+    padding:15px 18px;cursor:pointer;transition:.2s;font-size:1.02rem}
+  .opt:hover{background:rgba(255,111,174,.18);border-color:var(--rose);transform:translateX(4px)}
+
+  /* 結果 */
+  .result{display:none;text-align:center}
+  .reveal{animation:pop .7s cubic-bezier(.2,.9,.3,1.4)}
+  @keyframes pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+  .animal{font-size:5.4rem;line-height:1;margin:6px 0 4px;filter:drop-shadow(0 6px 20px rgba(255,111,174,.5))}
+  .rtype{font-family:var(--display);font-weight:800;font-size:2.1rem;color:var(--rose)}
+  .rcatch{font-size:1.1rem;color:var(--gold);margin:4px 0 18px}
+  .rblock{text-align:left;background:rgba(255,255,255,.05);border:1px solid var(--panel-br);
+    border-radius:14px;padding:16px 18px;margin:12px 0}
+  .rblock h3{font-family:var(--display);font-size:1.05rem;margin-bottom:6px;color:var(--rose2);display:flex;gap:8px;align-items:center}
+  .rblock p{color:var(--ink);font-size:.97rem}
+  .axes{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px 0}
+  .axes span{font-size:.8rem;background:rgba(255,111,174,.16);border:1px solid var(--panel-br);
+    padding:5px 12px;border-radius:99px;color:var(--rose2)}
+
+  .share-title{font-family:var(--display);font-size:1.1rem;margin:24px 0 12px;color:var(--ink)}
+  .shares{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .share-btn{font-size:.98rem;color:#fff;padding:12px 22px;border-radius:999px;display:inline-flex;align-items:center;gap:8px}
+  .sb-x{background:#000}
+  .sb-line{background:#06c755}
+  .sb-copy{background:rgba(255,255,255,.14);border:1px solid var(--panel-br)}
+  .share-btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
+  .copied{font-size:.82rem;color:var(--gold);opacity:0;transition:.3s;margin-top:8px}
+  .copied.show{opacity:1}
+
+  .cta{margin-top:22px;background:rgba(255,217,160,.12);border:1px solid rgba(255,217,160,.4);
+    border-radius:14px;padding:16px 18px;font-size:.96rem;color:var(--ink)}
+  .cta b{color:var(--gold)}
+  .retry{background:transparent;border:1px solid var(--panel-br);color:var(--muted);
+    padding:10px 22px;border-radius:999px;font-size:.86rem;margin-top:18px}
+  .retry:hover{background:rgba(255,255,255,.08)}
+  footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 10px 60px;line-height:1.7}
+</style>
+</head>
+<body>
+<canvas id="hearts"></canvas>
+<div class="glow" style="width:300px;height:300px;top:10%;left:-70px"></div>
+<div class="glow b" style="width:320px;height:320px;top:60%;right:-80px"></div>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">LOVE ANIMAL DIAGNOSIS</div>
+    <h1>あなたの恋愛は<br><em>何の動物</em>タイプ?</h1>
+    <p class="lead">10個の質問に答えるだけ。16種類の動物から、あなたの恋愛タイプと“ハマりがちな罠”がわかります。</p>
+  </header>
+
+  <div class="card" id="introCard" style="text-align:center">
+    <p style="margin-bottom:20px">直感でOK。深く考えず、まずやってみて🐾</p>
+    <button class="start-btn" id="startBtn">診断をはじめる</button>
+  </div>
+
+  <div class="card qwrap" id="qwrap">
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="qcount" id="qcount"></div>
+    <div class="qtext" id="qtext"></div>
+    <div class="opts" id="opts"></div>
+  </div>
+
+  <div class="card result" id="result"></div>
+
+  <footer>※これは性格傾向をもとにした“遊び”の診断です。相性や結果を断定するものではありません。<br>自分を知って、恋をもっと楽しむためのきっかけにどうぞ。</footer>
+</div>
+
+<script>
+/* ===== ここを書き換え：シェアで誘導したいURL ===== */
+const SHARE_URL = "https://note.com/famous_broom714";
+/* ============================================ */
+
+/* 16タイプ定義（コード=A_B_C_D） */
+const TYPES = {
+  "H_P_N_D":{a:"🐺",t:"オオカミ型",c:"一途な情熱ハンター",s:"好きと決めたら全力でまっすぐ。頼れるリード役。",trap:"重さで引かれがち。相手のペースを置き去りに。",w:"その情熱は宝。でも、追う前に一呼吸。"},
+  "H_P_N_M":{a:"🐶",t:"イヌ型",c:"甘えん坊な追いかけ屋",s:"愛情表現が素直で豊か。一緒にいて安心。",trap:"尽くしすぎ・依存しすぎで自分を見失う。",w:"好かれたいより、好きでいよう。"},
+  "H_P_F_D":{a:"🦅",t:"タカ型",c:"狙いを定める一点突破型",s:"狙った相手に的確にアプローチ。行動が速い。",trap:"手に入ると熱が冷めがち。追うのが目的化。",w:"捕まえた後の景色も、ちゃんと見て。"},
+  "H_P_F_M":{a:"🦊",t:"キツネ型",c:"駆け引き上手な情熱家",s:"押し引きが自然。相手を楽しませる魅力。",trap:"駆け引きしすぎて本心が伝わらない。",w:"たまには、まっすぐな一言を。"},
+  "H_C_N_D":{a:"🦁",t:"ライオン型",c:"面倒見のいい安定リーダー",s:"落ち着いて関係を引っ張る。包容力がある。",trap:"仕切りすぎ・正論で相手を窮屈に。",w:"守るより、隣で並ぶ意識を。"},
+  "H_C_N_M":{a:"🦦",t:"カワウソ型",c:"マイペースな世話好き",s:"さりげない気遣い。一緒にいて楽な空気。",trap:"踏み込み不足で「友達」止まりに。",w:"好意は、伝わって初めて意味がある。"},
+  "H_C_F_D":{a:"🐆",t:"ヒョウ型",c:"クールな一点集中ハンター",s:"冷静に狙い、無駄なく距離を詰める。自立的。",trap:"クールすぎて気持ちが見えず誤解される。",w:"温度は、少し見せたほうが届く。"},
+  "H_C_F_M":{a:"🦉",t:"フクロウ型",c:"観察派の静かな策士",s:"相手をよく見て動く。失敗が少ない。",trap:"考えすぎて動けない。チャンスを逃す。",w:"分析の次は、勇気のターン。"},
+  "G_P_N_D":{a:"🦢",t:"ハクチョウ型",c:"一途に待つロマンチスト",s:"愛が深く誠実。選んだ相手を大切にする。",trap:"待ちすぎ・尽くしすぎて重くなる。",w:"待つだけでなく、サインを出してみて。"},
+  "G_P_N_M":{a:"🐰",t:"ウサギ型",c:"さみしがりの甘え上手",s:"素直に甘えられて、相手の保護欲を刺激。",trap:"不安から相手に依存・束縛しがち。",w:"ひとりの時間も、あなたを魅力的にする。"},
+  "G_P_F_D":{a:"🦌",t:"シカ型",c:"凛とした待ちの情熱家",s:"芯が強く上品。来る相手をしっかり選ぶ。",trap:"プライドが邪魔して素直になれない。",w:"好きは、隠すより伝えたほうが進む。"},
+  "G_P_F_M":{a:"🐱",t:"ネコ型",c:"気まぐれツンデレ",s:"ミステリアスで惹きつける。自分軸がある。",trap:"気分のムラと素直じゃなさで相手を疲れさせる。",w:"好きなら、たまには素直に近づいて。"},
+  "G_C_N_D":{a:"🐧",t:"ペンギン型",c:"一途で誠実な寄り添い型",s:"決めた相手にまっすぐ。安心感が抜群。",trap:"受け身すぎて関係が動かない。",w:"誠実さに、一歩の行動を足そう。"},
+  "G_C_N_M":{a:"🐼",t:"パンダ型",c:"のんびり癒やし系",s:"一緒にいて和む。穏やかで衝突が少ない。",trap:"マイペースすぎてチャンスも相手も逃す。",w:"のんびりは長所。でも合図はこまめに。"},
+  "G_C_F_D":{a:"🐻‍❄️",t:"シロクマ型",c:"静かに芯を持つ自立型",s:"落ち着いて自立。誠実で信頼される。",trap:"壁が高く、距離が縮まりにくい。",w:"心を開く勇気が、距離を縮める。"},
+  "G_C_F_M":{a:"🐿️",t:"リス型",c:"自由気ままなマイペース",s:"自立して自分の世界を楽しむ。執着しない。",trap:"関心が薄く見え、すれ違う。",w:"好きな人にだけは、少し前のめりに。"}
+};
+const AXIS_LABEL={H:"追いかける派",G:"待ちたい派",P:"情熱的",C:"冷静",N:"距離は近め",F:"自立寄り",D:"一途・即決",M:"慎重・マイペース"};
+
+/* 質問：各設問が1つの軸に投票。10問（A3 B3 C2 D2） */
+const Q=[
+ {q:"気になる人ができたら?",ax:"A",o:[["自分から動きたい","H"],["相手から来てほしい","G"]]},
+ {q:"恋の連絡、どっち?",ax:"A",o:[["つい自分から送っちゃう","H"],["相手の連絡を待つ方","G"]]},
+ {q:"デートのプラン",ax:"A",o:[["自分でぐいぐい決める","H"],["相手に任せたい","G"]]},
+ {q:"恋に落ちると…",ax:"B",o:[["一気に熱くなる","P"],["わりと冷静でいられる","C"]]},
+ {q:"好きな人の前では",ax:"B",o:[["感情が顔に出る","P"],["平静を装える","C"]]},
+ {q:"恋愛と自分の予定",ax:"B",o:[["恋愛が最優先になりがち","P"],["バランスを保てる","C"]]},
+ {q:"付き合ったら連絡は",ax:"C",o:[["毎日たくさん取りたい","N"],["適度な距離が心地よい","F"]]},
+ {q:"休日は…",ax:"C",o:[["できるだけ一緒にいたい","N"],["一人の時間も大事にしたい","F"]]},
+ {q:"恋の決断は",ax:"D",o:[["ピンと来たら即決・一途","D"],["じっくり様子を見たい","M"]]},
+ {q:"気持ちの動き方",ax:"D",o:[["まっすぐ突き進む","D"],["マイペースに揺れる","M"]]},
+];
+
+let qi=0, score={A:{H:0,G:0},B:{P:0,C:0},C:{N:0,F:0},D:{D:0,M:0}};
+const introCard=document.getElementById('introCard'),qwrap=document.getElementById('qwrap'),
+  resultEl=document.getElementById('result'),bar=document.getElementById('bar'),
+  qcount=document.getElementById('qcount'),qtext=document.getElementById('qtext'),opts=document.getElementById('opts');
+
+document.getElementById('startBtn').onclick=()=>{introCard.style.display='none';qwrap.style.display='block';renderQ();};
+
+function renderQ(){
+  const cur=Q[qi];
+  bar.style.width=((qi)/Q.length*100)+'%';
+  qcount.textContent=`Q ${qi+1} / ${Q.length}`;
+  qtext.textContent=cur.q;
+  opts.innerHTML='';
+  cur.o.forEach(([label,val])=>{
+    const b=document.createElement('div');b.className='opt';b.textContent=label;
+    b.onclick=()=>{score[cur.ax][val]++;qi++; if(qi<Q.length)renderQ(); else finish();};
+    opts.appendChild(b);
+  });
+}
+function pick(ax){const k=Object.keys(score[ax]);return score[ax][k[0]]>=score[ax][k[1]]?k[0]:k[1];}
+function finish(){
+  bar.style.width='100%';
+  const code=[pick('A'),pick('B'),pick('C'),pick('D')].join('_');
+  const t=TYPES[code];
+  try{localStorage.setItem('love_type_result',JSON.stringify({code,t}));}catch(e){}
+  qwrap.style.display='none';
+  showResult(code,t);
+}
+function showResult(code,t){
+  const axes=code.split('_').map(c=>AXIS_LABEL[c]);
+  resultEl.style.display='block';
+  resultEl.classList.add('reveal');
+  const shareText=`私の恋愛タイプは【${t.t}】${t.a}「${t.c}」でした！\nあなたは何の動物?🐾 #恋愛タイプ診断`;
+  const xUrl=`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText+"\n")}&url=${encodeURIComponent(SHARE_URL)}`;
+  const lineUrl=`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(SHARE_URL)}&text=${encodeURIComponent(shareText)}`;
+  resultEl.innerHTML=`
+    <div class="eyebrow" style="color:var(--rose2)">YOUR LOVE TYPE</div>
+    <div class="animal">${t.a}</div>
+    <div class="rtype">${t.t}</div>
+    <div class="rcatch">「${t.c}」</div>
+    <div class="axes">${axes.map(a=>`<span>${a}</span>`).join('')}</div>
+    <div class="rblock"><h3>💪 あなたの強み</h3><p>${t.s}</p></div>
+    <div class="rblock"><h3>⚠️ ハマりがちな罠</h3><p>${t.trap}</p></div>
+    <div class="rblock"><h3>💌 ひとこと</h3><p>${t.w}</p></div>
+
+    <div class="share-title">結果をシェアしよう（あなたは何タイプ?と聞いてみて🐾）</div>
+    <div class="shares">
+      <a class="share-btn sb-x" href="${xUrl}" target="_blank" rel="noopener">𝕏 でシェア</a>
+      <a class="share-btn sb-line" href="${lineUrl}" target="_blank" rel="noopener">LINEで送る</a>
+      <button class="share-btn sb-copy" id="copyBtn">🔗 リンクをコピー</button>
+    </div>
+    <div class="copied" id="copied">コピーしました！</div>
+
+    <div class="cta">🎁 <b>あなたの「相性のいい動物」と、タイプ別の恋の進め方</b>は、記事の特典ツールでチェックできます。自分のタイプ（${t.t}）を覚えて、続きへどうぞ！</div>
+    <button class="retry" id="retryBtn">もう一度診断する</button>
+  `;
+  document.getElementById('copyBtn').onclick=async()=>{
+    const txt=shareText+"\n"+SHARE_URL;
+    try{await navigator.clipboard.writeText(txt);}catch(e){
+      const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();
+    }
+    const c=document.getElementById('copied');c.classList.add('show');setTimeout(()=>c.classList.remove('show'),1600);
+  };
+  document.getElementById('retryBtn').onclick=()=>{
+    qi=0;score={A:{H:0,G:0},B:{P:0,C:0},C:{N:0,F:0},D:{D:0,M:0}};
+    resultEl.style.display='none';resultEl.classList.remove('reveal');
+    qwrap.style.display='block';renderQ();window.scrollTo({top:0,behavior:'smooth'});
+  };
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ハート パーティクル */
+const cv=document.getElementById('hearts'),cx=cv.getContext('2d');
+let hs=[];
+function rs(){cv.width=innerWidth;cv.height=innerHeight;}
+addEventListener('resize',rs);rs();
+function spawn(){return{x:Math.random()*cv.width,y:cv.height+20,s:Math.random()*14+8,
+  sp:Math.random()*.6+.3,sw:Math.random()*1.2-.6,a:Math.random()*.5+.3,ph:Math.random()*6}}
+for(let i=0;i<26;i++){const h=spawn();h.y=Math.random()*cv.height;hs.push(h);}
+function heart(x,y,s,a){cx.save();cx.translate(x,y);cx.scale(s/16,s/16);cx.globalAlpha=a;
+  cx.beginPath();cx.moveTo(0,4);cx.bezierCurveTo(-8,-4,-8,-12,0,-7);cx.bezierCurveTo(8,-12,8,-4,0,4);
+  cx.fillStyle='#ff8fc0';cx.fill();cx.restore();}
+function loop(){cx.clearRect(0,0,cv.width,cv.height);
+  for(const h of hs){h.y-=h.sp;h.ph+=0.02;h.x+=h.sw+Math.sin(h.ph)*.3;
+    heart(h.x,h.y,h.s,h.a*(.6+Math.sin(h.ph)*.4));
+    if(h.y<-20){Object.assign(h,spawn());}}
+  requestAnimationFrame(loop);}
+loop();
+</script>
+</body>
+</html>

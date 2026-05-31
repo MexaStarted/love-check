@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<!--
+═══════════════════════════════════════════════════════════════
+  恋愛タイプ別 相性＆実践ツール（特典）/ 16動物タイプ
+  ─ 診断で出た「自分のタイプ」を選んで使う ─
+
+  【配布】このファイル(.html)をブラウザで開くだけ。インストール不要。
+  選んだタイプとメモはブラウザに自動保存（端末内のみ）。リセット可。
+  ※相性・結果を断定するものではありません。自己理解と、誠実な
+  コミュニケーションのための“遊び”ツールです。
+═══════════════════════════════════════════════════════════════
+-->
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>恋愛タイプ別 相性＆実践ツール</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Shippori+Mincho:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#2a1230;--bg2:#3d1838;--bg3:#1a0a24;
+    --ink:#fff3f8;--muted:#d6a9c4;
+    --rose:#ff6fae;--rose2:#ff9ec9;--gold:#ffd9a0;--plum:#b56cff;
+    --green:#7be0a3;--amber:#ffc46b;--red:#ff8a8a;
+    --panel:rgba(70,30,70,.42);--panel-br:rgba(255,150,200,.22);
+    --display:'Shippori Mincho',serif;--body:'Zen Maru Gothic',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--body);color:var(--ink);min-height:100vh;overflow-x:hidden;line-height:1.85;
+    background:linear-gradient(160deg,#2a1230,#3d1838 45%,#1a0a24)}
+  #hearts{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .glow{position:fixed;border-radius:50%;filter:blur(60px);opacity:.4;z-index:0;pointer-events:none;
+    background:radial-gradient(circle,var(--rose),transparent 70%);animation:float 24s ease-in-out infinite}
+  .glow.b{background:radial-gradient(circle,var(--plum),transparent 70%);animation-duration:30s}
+  @keyframes float{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-40px)}}
+  .wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:0 18px 70px}
+
+  header{text-align:center;padding:60px 0 16px}
+  .eyebrow{font-size:.74rem;letter-spacing:.3em;color:var(--rose2);margin-bottom:12px}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(1.8rem,6vw,2.7rem);line-height:1.3;text-shadow:0 0 26px rgba(255,111,174,.4)}
+  .lead{color:var(--muted);margin:14px auto 0;max-width:46ch;font-size:.98rem}
+
+  .card{background:var(--panel);border:1px solid var(--panel-br);border-radius:22px;padding:26px 22px;margin:22px 0;
+    backdrop-filter:blur(8px);box-shadow:0 24px 70px -34px rgba(0,0,0,.7)}
+  h2{font-family:var(--display);font-weight:800;font-size:1.4rem;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+  h2 .d{width:8px;height:8px;border-radius:50%;background:var(--rose);box-shadow:0 0 12px var(--rose)}
+  .note{color:var(--muted);font-size:.85rem;margin-bottom:16px}
+
+  /* タイプ選択 */
+  .picker{display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:8px}
+  .pick{background:rgba(255,255,255,.06);border:1px solid var(--panel-br);border-radius:13px;
+    padding:12px 4px;text-align:center;cursor:pointer;transition:.18s}
+  .pick:hover{background:rgba(255,111,174,.18);transform:translateY(-2px)}
+  .pick.sel{background:rgba(255,111,174,.3);border-color:var(--rose)}
+  .pick .e{font-size:1.7rem;line-height:1.1}
+  .pick .n{font-size:.74rem;color:var(--muted);margin-top:2px}
+
+  .hidden{display:none}
+
+  /* マイカルテ */
+  .me{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .me .big{font-size:3.6rem;filter:drop-shadow(0 6px 18px rgba(255,111,174,.5))}
+  .me .name{font-family:var(--display);font-size:1.7rem;color:var(--rose)}
+  .me .catch{color:var(--gold);font-size:1rem}
+  .bars{margin-top:10px;display:grid;gap:12px}
+  .axisbar{font-size:.82rem}
+  .axisbar .lbls{display:flex;justify-content:space-between;color:var(--muted);margin-bottom:4px}
+  .track{height:9px;border-radius:99px;background:rgba(255,255,255,.1);position:relative;overflow:hidden}
+  .fill{position:absolute;top:0;bottom:0;background:linear-gradient(90deg,var(--rose),var(--gold));border-radius:99px;transition:width .6s ease}
+  .karte{margin-top:6px}
+  .karte .row{background:rgba(255,255,255,.05);border:1px solid var(--panel-br);border-radius:12px;padding:13px 15px;margin:10px 0}
+  .karte h3{font-family:var(--display);font-size:1rem;color:var(--rose2);margin-bottom:4px}
+
+  /* 相性 */
+  .compat{display:grid;gap:10px}
+  .cgroup h3{font-family:var(--display);font-size:1.05rem;margin:6px 0;display:flex;align-items:center;gap:8px}
+  .badge{font-size:.72rem;padding:3px 10px;border-radius:99px}
+  .b-best{background:rgba(123,224,163,.2);color:var(--green);border:1px solid rgba(123,224,163,.4)}
+  .b-learn{background:rgba(255,196,107,.18);color:var(--amber);border:1px solid rgba(255,196,107,.4)}
+  .b-care{background:rgba(255,138,138,.16);color:var(--red);border:1px solid rgba(255,138,138,.4)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{background:rgba(255,255,255,.06);border:1px solid var(--panel-br);border-radius:11px;padding:8px 12px;font-size:.9rem;display:flex;align-items:center;gap:6px}
+  .chip .e{font-size:1.1rem}
+  .howto{color:var(--muted);font-size:.86rem;margin-top:8px;line-height:1.7}
+
+  /* チェックリスト */
+  .checks{display:grid;gap:9px}
+  .check{display:flex;align-items:flex-start;gap:12px;cursor:pointer;user-select:none;
+    background:rgba(255,255,255,.05);border:1px solid var(--panel-br);border-radius:12px;padding:12px 14px;transition:.2s}
+  .check:hover{background:rgba(255,111,174,.14)}
+  .check.done{background:rgba(123,224,163,.12);border-color:rgba(123,224,163,.4)}
+  .cbox{flex:0 0 auto;width:22px;height:22px;border-radius:6px;border:2px solid #b06a90;display:grid;place-items:center;margin-top:2px;transition:.2s}
+  .check.done .cbox{background:var(--green);border-color:var(--green)}
+  .cbox svg{width:12px;height:12px;opacity:0;transition:.2s}
+  .check.done .cbox svg{opacity:1}
+  .check .t{flex:1;font-size:.96rem}
+  .check.done .t{color:var(--muted)}
+
+  /* メモ */
+  textarea{background:rgba(15,8,24,.6);border:1px solid var(--panel-br);border-radius:12px;color:var(--ink);
+    font-family:var(--body);font-size:.96rem;padding:12px 14px;width:100%;resize:vertical;min-height:90px}
+  textarea:focus{outline:none;border-color:var(--rose)}
+  .save-btn{font-family:var(--body);font-weight:700;color:#3d1838;background:linear-gradient(135deg,var(--rose2),var(--rose));
+    border:none;border-radius:999px;padding:11px 28px;cursor:pointer;transition:.25s;margin-top:10px}
+  .save-btn:hover{transform:translateY(-2px);filter:brightness(1.06)}
+  .flash{color:var(--gold);font-size:.82rem;opacity:0;transition:.3s;margin-left:12px}
+  .flash.show{opacity:1}
+
+  .reset{margin-top:8px;background:transparent;border:1px solid var(--panel-br);color:var(--muted);
+    padding:9px 20px;border-radius:999px;font-size:.84rem;cursor:pointer}
+  .reset:hover{background:rgba(255,255,255,.08)}
+  .change{background:transparent;border:none;color:var(--rose2);cursor:pointer;font-size:.86rem;text-decoration:underline}
+  footer{text-align:center;color:var(--muted);font-size:.8rem;padding:10px 10px 50px;line-height:1.7}
+</style>
+</head>
+<body>
+<canvas id="hearts"></canvas>
+<div class="glow" style="width:300px;height:300px;top:8%;left:-70px"></div>
+<div class="glow b" style="width:320px;height:320px;top:62%;right:-80px"></div>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">COMPATIBILITY & ACTION TOOL</div>
+    <h1>あなたのタイプで読み解く<br>相性＆恋の進め方</h1>
+    <p class="lead">診断で出た「あなたの動物タイプ」を選んでください。相性のいい相手、恋愛傾向カルテ、次の一歩がわかります。</p>
+  </header>
+
+  <!-- タイプ選択 -->
+  <section class="card" id="pickCard">
+    <h2><span class="d"></span>あなたのタイプを選ぶ</h2>
+    <p class="note">診断結果の動物をタップ。（あとで変更もできます）</p>
+    <div class="picker" id="picker"></div>
+  </section>
+
+  <!-- 以下、選択後に表示 -->
+  <section class="card hidden" id="karteCard">
+    <h2><span class="d"></span>あなたの恋愛傾向カルテ <button class="change" id="changeBtn">タイプを変更</button></h2>
+    <div class="me" id="meHead"></div>
+    <div class="bars" id="bars"></div>
+    <div class="karte" id="karte"></div>
+  </section>
+
+  <section class="card hidden" id="compatCard">
+    <h2><span class="d"></span>相性のいい相手 / 要注意な相手</h2>
+    <p class="note">あくまで傾向です。「合わない＝ダメ」ではなく、工夫しだいでうまくいきます。</p>
+    <div class="compat" id="compat"></div>
+  </section>
+
+  <section class="card hidden" id="checkCard">
+    <h2><span class="d"></span>あなたへの 実践チェックリスト</h2>
+    <p class="note">タイプの“罠”を避けるための、小さな一歩。チェックは自動保存されます。</p>
+    <div class="checks" id="checks"></div>
+  </section>
+
+  <section class="card hidden" id="memoCard">
+    <h2><span class="d"></span>気持ち整理メモ</h2>
+    <p class="note">気になる人とのやりとりや、自分の気持ちを書き留めて。あとで読み返すと、自分のパターンが見えてきます。（自動保存）</p>
+    <textarea id="memo" placeholder="例: 既読スルーされて不安になった。でも“追いすぎ”は私の罠だから、今日は一晩待ってみる。"></textarea>
+    <div><button class="save-btn" id="memoSave">保存する</button><span class="flash" id="flash">保存しました ✓</span></div>
+    <div style="margin-top:16px"><button class="reset" id="reset">保存データを消す</button></div>
+  </section>
+
+  <footer>※相性や結果を断定するものではありません。自分を知り、相手を思いやる“きっかけ”としてお使いください。</footer>
+</div>
+
+<script>
+const TYPES={
+ "H_P_N_D":{a:"🐺",t:"オオカミ型",c:"一途な情熱ハンター",s:"好きと決めたら全力でまっすぐ。頼れるリード役。",trap:"重さで引かれがち。相手のペースを置き去りに。",
+   list:["連絡や誘いは、相手の反応を見てから次へ","“好き”を伝える前に、相手の状況を一度想像する","沈黙＝拒否ではない。返信を急かさない"]},
+ "H_P_N_M":{a:"🐶",t:"イヌ型",c:"甘えん坊な追いかけ屋",s:"愛情表現が素直で豊か。一緒にいて安心。",trap:"尽くしすぎ・依存しすぎで自分を見失う。",
+   list:["相手のためより、自分の予定も大切にする","“嫌われたくない”で動いていないか確認","週に一度は自分だけの楽しみの時間を持つ"]},
+ "H_P_F_D":{a:"🦅",t:"タカ型",c:"狙いを定める一点突破型",s:"狙った相手に的確にアプローチ。行動が速い。",trap:"手に入ると熱が冷めがち。追うのが目的化。",
+   list:["“付き合った後”をどうしたいか想像してみる","落とすことより、続けることに目を向ける","相手の良さを毎回ひとつ言葉にする"]},
+ "H_P_F_M":{a:"🦊",t:"キツネ型",c:"駆け引き上手な情熱家",s:"押し引きが自然。相手を楽しませる魅力。",trap:"駆け引きしすぎて本心が伝わらない。",
+   list:["大事な場面では駆け引き抜きの本音を出す","好意は、時々まっすぐ言葉にする","相手が不安そうなら、安心させる側に回る"]},
+ "H_C_N_D":{a:"🦁",t:"ライオン型",c:"面倒見のいい安定リーダー",s:"落ち着いて関係を引っ張る。包容力がある。",trap:"仕切りすぎ・正論で相手を窮屈に。",
+   list:["決める前に「どうしたい?」と相手に聞く","正論より、まず気持ちに共感する","引っ張るより、並んで歩く意識"]},
+ "H_C_N_M":{a:"🦦",t:"カワウソ型",c:"マイペースな世話好き",s:"さりげない気遣い。一緒にいて楽な空気。",trap:"踏み込み不足で「友達」止まりに。",
+   list:["好意は、態度だけでなく言葉でも伝える","“いい人”で止まらず、一歩踏み込む","誘いたいときは、具体的な日時で誘う"]},
+ "H_C_F_D":{a:"🐆",t:"ヒョウ型",c:"クールな一点集中ハンター",s:"冷静に狙い、無駄なく距離を詰める。自立的。",trap:"クールすぎて気持ちが見えず誤解される。",
+   list:["好意は、表情や言葉で少し見せる","効率より、雑談の余白を楽しむ","相手の話に“感情”で反応してみる"]},
+ "H_C_F_M":{a:"🦉",t:"フクロウ型",c:"観察派の静かな策士",s:"相手をよく見て動く。失敗が少ない。",trap:"考えすぎて動けない。チャンスを逃す。",
+   list:["“考える”を一回で止めて、小さく行動する","完璧なタイミングを待ちすぎない","気になったら、まず軽い連絡から"]},
+ "G_P_N_D":{a:"🦢",t:"ハクチョウ型",c:"一途に待つロマンチスト",s:"愛が深く誠実。選んだ相手を大切にする。",trap:"待ちすぎ・尽くしすぎて重くなる。",
+   list:["待つだけでなく、好意のサインを出す","尽くす前に、相手が求めているか確認","“重い”と感じたら、少し自分の時間へ"]},
+ "G_P_N_M":{a:"🐰",t:"ウサギ型",c:"さみしがりの甘え上手",s:"素直に甘えられて、相手の保護欲を刺激。",trap:"不安から相手に依存・束縛しがち。",
+   list:["不安なときほど、一度深呼吸してから連絡","相手の自由時間を尊重する","自分を満たす“ひとり時間”をつくる"]},
+ "G_P_F_D":{a:"🦌",t:"シカ型",c:"凛とした待ちの情熱家",s:"芯が強く上品。来る相手をしっかり選ぶ。",trap:"プライドが邪魔して素直になれない。",
+   list:["好きな気持ちは、隠さず小出しに伝える","完璧に見せようとしすぎない","素直な弱さも、魅力になると知る"]},
+ "G_P_F_M":{a:"🐱",t:"ネコ型",c:"気まぐれツンデレ",s:"ミステリアスで惹きつける。自分軸がある。",trap:"気分のムラと素直じゃなさで相手を疲れさせる。",
+   list:["好きなら、たまには自分から近づく","ツンの後は、ちゃんとデレも見せる","気分で連絡を切らさない"]},
+ "G_C_N_D":{a:"🐧",t:"ペンギン型",c:"一途で誠実な寄り添い型",s:"決めた相手にまっすぐ。安心感が抜群。",trap:"受け身すぎて関係が動かない。",
+   list:["待つだけでなく、自分から誘ってみる","気持ちは、言葉にして初めて伝わる","“相手任せ”を一つ、自分発信に変える"]},
+ "G_C_N_M":{a:"🐼",t:"パンダ型",c:"のんびり癒やし系",s:"一緒にいて和む。穏やかで衝突が少ない。",trap:"マイペースすぎてチャンスも相手も逃す。",
+   list:["好意のサインには、こまめに反応する","のんびりでも、連絡の合図は返す","“また今度”を、具体的な予定に変える"]},
+ "G_C_F_D":{a:"🐻‍❄️",t:"シロクマ型",c:"静かに芯を持つ自立型",s:"落ち着いて自立。誠実で信頼される。",trap:"壁が高く、距離が縮まりにくい。",
+   list:["心を開く小さな自己開示をしてみる","“頼る”ことも、信頼のサインと知る","相手の好意を、まず受け取ってみる"]},
+ "G_C_F_M":{a:"🐿️",t:"リス型",c:"自由気ままなマイペース",s:"自立して自分の世界を楽しむ。執着しない。",trap:"関心が薄く見え、すれ違う。",
+   list:["好きな人には、関心を言葉で示す","自分の世界に閉じすぎない","相手の話を“もっと聞く”を意識する"]}
+};
+const ORDER=["H_P_N_D","H_P_N_M","H_P_F_D","H_P_F_M","H_C_N_D","H_C_N_M","H_C_F_D","H_C_F_M","G_P_N_D","G_P_N_M","G_P_F_D","G_P_F_M","G_C_N_D","G_C_N_M","G_C_F_D","G_C_F_M"];
+const AX=[
+ {key:0,l:["追いかける","待ちたい"],map:{H:0,G:1}},
+ {key:1,l:["情熱的","冷静"],map:{P:0,C:1}},
+ {key:2,l:["距離は近め","自立寄り"],map:{N:0,F:1}},
+ {key:3,l:["一途・即決","マイペース"],map:{D:0,M:1}},
+];
+
+const KEY="love_compat_tool_v1";
+let st=load();
+function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{type:null,checks:{},memo:""};}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+
+/* タイプ選択UI */
+const picker=document.getElementById('picker');
+ORDER.forEach(code=>{
+  const t=TYPES[code];const b=document.createElement('div');b.className='pick';
+  b.innerHTML=`<div class="e">${t.a}</div><div class="n">${t.t.replace('型','')}</div>`;
+  b.onclick=()=>{st.type=code; if(!st.checks[code])st.checks[code]=[false,false,false]; save(); renderAll(); window.scrollTo({top:document.getElementById('karteCard').offsetTop-20,behavior:'smooth'});};
+  picker.appendChild(b);
+});
+
+document.getElementById('changeBtn').onclick=()=>{window.scrollTo({top:0,behavior:'smooth'});};
+
+function codeToAxisRatio(code,i){
+  // 0 or 1 -> render as 85% / 15% feel
+  const parts=code.split('_');const c=parts[i];const left=AX[i].map[c]===0;
+  return left?82:18;
+}
+
+function renderAll(){
+  if(!st.type){return;}
+  const code=st.type,t=TYPES[code];
+  ['karteCard','compatCard','checkCard','memoCard'].forEach(id=>document.getElementById(id).classList.remove('hidden'));
+  // selected highlight
+  [...picker.children].forEach((el,idx)=>el.classList.toggle('sel',ORDER[idx]===code));
+
+  // head
+  document.getElementById('meHead').innerHTML=`<div class="big">${t.a}</div><div><div class="name">${t.t}</div><div class="catch">「${t.c}」</div></div>`;
+
+  // bars
+  const bars=document.getElementById('bars');bars.innerHTML='';
+  AX.forEach((ax,i)=>{
+    const w=codeToAxisRatio(code,i);
+    bars.innerHTML+=`<div class="axisbar"><div class="lbls"><span>${ax.l[0]}</span><span>${ax.l[1]}</span></div>
+      <div class="track"><div class="fill" style="width:${w}%"></div></div></div>`;
+  });
+
+  // karte
+  document.getElementById('karte').innerHTML=`
+    <div class="row"><h3>💪 強み</h3><p>${t.s}</p></div>
+    <div class="row"><h3>⚠️ ハマりがちな罠</h3><p>${t.trap}</p></div>`;
+
+  // 相性
+  renderCompat(code);
+
+  // checks
+  const checks=document.getElementById('checks');checks.innerHTML='';
+  if(!st.checks[code])st.checks[code]=[false,false,false];
+  t.list.forEach((item,i)=>{
+    const d=document.createElement('div');d.className='check'+(st.checks[code][i]?' done':'');
+    d.innerHTML=`<div class="cbox"><svg viewBox="0 0 24 24" fill="none" stroke="#1a0a24" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="t">${item}</div>`;
+    d.onclick=()=>{st.checks[code][i]=!st.checks[code][i];save();renderAll();};
+    checks.appendChild(d);
+  });
+
+  // memo
+  document.getElementById('memo').value=st.memo||"";
+}
+
+function diff(a,b){let n=0;for(let i=0;i<4;i++)if(a[i]!==b[i])n++;return n;}
+function renderCompat(code){
+  const me=code.split('_');
+  const best=[],learn=[],care=[];
+  ORDER.forEach(oc=>{
+    if(oc===code){return;}
+    const o=oc.split('_');const d=diff(me,o);
+    const appOpp = me[0]!==o[0]; // アプローチが逆
+    const appSame = me[0]===o[0];
+    if((d===2&&appOpp)||(d===2)) { if(appOpp) best.push(oc); else learn.push(oc); }
+    else if(d>=3) learn.push(oc);
+    else if(d<=1 || (appSame&&d===2)) care.push(oc);
+    else best.push(oc);
+  });
+  // dedupe & cap
+  const uniq=arr=>[...new Set(arr)];
+  const B=uniq(best).slice(0,4),L=uniq(learn).filter(x=>!B.includes(x)).slice(0,4),
+        C=uniq(care).filter(x=>!B.includes(x)&&!L.includes(x)).slice(0,4);
+  const chip=oc=>`<div class="chip"><span class="e">${TYPES[oc].a}</span>${TYPES[oc].t}</div>`;
+  const el=document.getElementById('compat');
+  el.innerHTML=`
+    <div class="cgroup"><h3><span class="badge b-best">ベスト</span> 自然と噛み合う相手</h3>
+      <div class="chips">${B.map(chip).join('')||'<span class="howto">—</span>'}</div>
+      <div class="howto">追う・待つのバランスが合いやすい組み合わせ。素直に距離を縮めてOK。</div></div>
+    <div class="cgroup"><h3><span class="badge b-learn">学びあり</span> 刺激と成長をくれる相手</h3>
+      <div class="chips">${L.map(chip).join('')||'<span class="howto">—</span>'}</div>
+      <div class="howto">違いが大きいぶん新鮮。価値観のすり合わせを丁寧にすれば、ぐっと深まる。</div></div>
+    <div class="cgroup"><h3><span class="badge b-care">要注意</span> すれ違いやすい相手</h3>
+      <div class="chips">${C.map(chip).join('')||'<span class="howto">—</span>'}</div>
+      <div class="howto">似すぎ or 押し引きが衝突しやすい組み合わせ。どちらが歩み寄るか役割を決めると◎。</div></div>`;
+}
+
+/* メモ保存 */
+document.getElementById('memoSave').onclick=()=>{
+  st.memo=document.getElementById('memo').value;save();
+  const f=document.getElementById('flash');f.classList.add('show');setTimeout(()=>f.classList.remove('show'),1400);
+};
+document.getElementById('reset').onclick=()=>{
+  if(confirm("選んだタイプ・チェック・メモをすべて消します。よろしいですか?")){
+    st={type:null,checks:{},memo:""};save();
+    ['karteCard','compatCard','checkCard','memoCard'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+    [...picker.children].forEach(el=>el.classList.remove('sel'));
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+};
+
+/* ハート パーティクル */
+const cv=document.getElementById('hearts'),cx=cv.getContext('2d');
+let hs=[];function rs(){cv.width=innerWidth;cv.height=innerHeight;}addEventListener('resize',rs);rs();
+function spawn(){return{x:Math.random()*cv.width,y:cv.height+20,s:Math.random()*14+8,sp:Math.random()*.6+.3,sw:Math.random()*1.2-.6,a:Math.random()*.5+.3,ph:Math.random()*6}}
+for(let i=0;i<24;i++){const h=spawn();h.y=Math.random()*cv.height;hs.push(h);}
+function heart(x,y,s,a){cx.save();cx.translate(x,y);cx.scale(s/16,s/16);cx.globalAlpha=a;cx.beginPath();cx.moveTo(0,4);cx.bezierCurveTo(-8,-4,-8,-12,0,-7);cx.bezierCurveTo(8,-12,8,-4,0,4);cx.fillStyle='#ff8fc0';cx.fill();cx.restore();}
+function loop(){cx.clearRect(0,0,cv.width,cv.height);for(const h of hs){h.y-=h.sp;h.ph+=0.02;h.x+=h.sw+Math.sin(h.ph)*.3;heart(h.x,h.y,h.s,h.a*(.6+Math.sin(h.ph)*.4));if(h.y<-20)Object.assign(h,spawn());}requestAnimationFrame(loop);}
+loop();
+
+// init
+renderAll();
+</script>
+</body>
+</html>
