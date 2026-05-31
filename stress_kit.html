@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<!--
+═══════════════════════════════════════════════════════════════
+  ストレスタイプ別 セルフケアキット（特典）/ 8動物タイプ
+  ─ 診断で出た「自分のタイプ」を選んで使う ─
+  【設置】GitHub Pages等に置き、記事(有料部分)にURLを貼る。
+  選択・チェック・気分ログはブラウザに自動保存（端末内のみ）。リセット可。
+  ※医療ではありません。つらさが続く・強いときは専門家や相談窓口へ(下部に案内)。
+═══════════════════════════════════════════════════════════════
+-->
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ストレスタイプ別 セルフケアキット</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Shippori+Mincho:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#0e2a2e;--bg2:#123a3c;--bg3:#08191c;--ink:#eafaf6;--muted:#9fc7c1;
+    --teal:#3fd6c0;--teal2:#79e6d4;--sky:#6fb6ff;--gold:#ffe2a0;--green:#7be0a3;
+    --panel:rgba(20,55,58,.5);--panel-br:rgba(120,220,205,.2);
+    --display:'Shippori Mincho',serif;--body:'Zen Maru Gothic',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--body);color:var(--ink);min-height:100vh;overflow-x:hidden;line-height:1.85;
+    background:linear-gradient(160deg,#0e2a2e,#123a3c 45%,#08191c)}
+  #bubbles{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .glow{position:fixed;border-radius:50%;filter:blur(60px);opacity:.32;z-index:0;pointer-events:none;
+    background:radial-gradient(circle,var(--teal),transparent 70%);animation:float 26s ease-in-out infinite}
+  .glow.b{background:radial-gradient(circle,var(--sky),transparent 70%);animation-duration:32s}
+  @keyframes float{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-40px)}}
+  .wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:0 18px 70px}
+
+  header{text-align:center;padding:58px 0 14px}
+  .eyebrow{font-size:.74rem;letter-spacing:.3em;color:var(--teal2);margin-bottom:12px}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(1.7rem,5.6vw,2.5rem);line-height:1.34;text-shadow:0 0 26px rgba(63,214,192,.35)}
+  .lead{color:var(--muted);margin:14px auto 0;max-width:46ch;font-size:.98rem}
+
+  .card{background:var(--panel);border:1px solid var(--panel-br);border-radius:22px;padding:26px 22px;margin:22px 0;backdrop-filter:blur(8px);box-shadow:0 24px 70px -34px rgba(0,0,0,.7)}
+  h2{font-family:var(--display);font-weight:800;font-size:1.4rem;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+  h2 .d{width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 12px var(--teal)}
+  .note{color:var(--muted);font-size:.85rem;margin-bottom:16px}
+  .hidden{display:none}
+
+  .picker{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px}
+  .pick{background:rgba(255,255,255,.06);border:1px solid var(--panel-br);border-radius:13px;padding:12px 4px;text-align:center;cursor:pointer;transition:.18s}
+  .pick:hover{background:rgba(63,214,192,.18);transform:translateY(-2px)}
+  .pick.sel{background:rgba(63,214,192,.3);border-color:var(--teal)}
+  .pick .e{font-size:1.7rem;line-height:1.1}
+  .pick .n{font-size:.74rem;color:var(--muted);margin-top:2px}
+  .change{background:transparent;border:none;color:var(--teal2);cursor:pointer;font-size:.86rem;text-decoration:underline}
+
+  .me{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .me .big{font-size:3.4rem;filter:drop-shadow(0 6px 18px rgba(63,214,192,.5))}
+  .me .name{font-family:var(--display);font-size:1.6rem;color:var(--teal)}
+  .me .catch{color:var(--gold)}
+  .row2{background:rgba(255,255,255,.05);border:1px solid var(--panel-br);border-radius:12px;padding:13px 15px;margin:10px 0}
+  .row2 h3{font-family:var(--display);font-size:1rem;color:var(--teal2);margin-bottom:4px}
+  .row2.sci{border-color:rgba(255,226,160,.4);background:rgba(255,226,160,.08)}
+  .row2.sci h3{color:var(--gold)}
+
+  .checks{display:grid;gap:9px}
+  .check{display:flex;align-items:flex-start;gap:12px;cursor:pointer;user-select:none;background:rgba(255,255,255,.05);border:1px solid var(--panel-br);border-radius:12px;padding:12px 14px;transition:.2s}
+  .check:hover{background:rgba(63,214,192,.14)}
+  .check.done{background:rgba(123,224,163,.12);border-color:rgba(123,224,163,.4)}
+  .cbox{flex:0 0 auto;width:22px;height:22px;border-radius:6px;border:2px solid #5a9c90;display:grid;place-items:center;margin-top:2px;transition:.2s}
+  .check.done .cbox{background:var(--green);border-color:var(--green)}
+  .cbox svg{width:12px;height:12px;opacity:0;transition:.2s}.check.done .cbox svg{opacity:1}
+  .check .t{flex:1;font-size:.96rem}.check.done .t{color:var(--muted)}
+
+  /* 呼吸 */
+  .breath{display:flex;flex-direction:column;align-items:center;gap:14px;padding:8px 0}
+  .bc{width:160px;height:160px;border-radius:50%;display:grid;place-items:center;
+    background:radial-gradient(circle,rgba(63,214,192,.3),rgba(63,214,192,.05) 70%);border:1px solid rgba(120,230,212,.4);transition:transform .2s linear}
+  .bw{font-family:var(--display);font-size:1.3rem}.bcnt{font-family:monospace;color:var(--teal2);margin-top:2px}
+  .bbtn{font-family:var(--body);font-weight:700;color:#08191c;background:linear-gradient(135deg,var(--teal2),var(--teal));border:none;border-radius:999px;padding:10px 26px;cursor:pointer;transition:.25s}
+  .bbtn:hover{transform:translateY(-2px);filter:brightness(1.07)}
+
+  /* 気分ログ */
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+  label{font-size:.78rem;color:var(--muted)}
+  input,textarea{background:rgba(8,25,28,.65);border:1px solid var(--panel-br);border-radius:10px;color:var(--ink);font-family:var(--body);font-size:.95rem;padding:10px 12px;width:100%}
+  input:focus,textarea:focus{outline:none;border-color:var(--teal)}
+  textarea{resize:vertical;min-height:60px}
+  .mood{display:flex;gap:8px}
+  .mood span{flex:1;text-align:center;padding:8px 0;border:1px solid var(--panel-br);border-radius:10px;cursor:pointer;font-size:1.3rem;transition:.18s}
+  .mood span:hover{background:rgba(63,214,192,.15)}.mood span.sel{background:rgba(63,214,192,.28);border-color:var(--teal)}
+  .save-btn{font-family:var(--body);font-weight:700;color:#08191c;background:linear-gradient(135deg,var(--teal2),var(--teal));border:none;border-radius:999px;padding:11px 28px;cursor:pointer;transition:.25s;margin-top:6px}
+  .save-btn:hover{transform:translateY(-2px);filter:brightness(1.07)}
+  .flash{color:var(--gold);font-size:.82rem;opacity:0;transition:.3s;margin-left:12px}.flash.show{opacity:1}
+  .logs{margin-top:14px;display:grid;gap:9px}
+  .logitem{background:rgba(255,255,255,.05);border:1px solid var(--panel-br);border-left:3px solid var(--teal);border-radius:11px;padding:11px 14px;font-size:.88rem;display:flex;gap:12px;flex-wrap:wrap;align-items:baseline}
+  .logitem .d{font-family:monospace;color:var(--teal2);font-size:.78rem}.logitem .m{color:var(--muted);flex:1;min-width:150px}
+  .del{margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem}.del:hover{color:var(--teal)}
+
+  .reset{margin-top:8px;background:transparent;border:1px solid var(--panel-br);color:var(--muted);padding:9px 20px;border-radius:999px;font-size:.84rem;cursor:pointer}
+  .reset:hover{background:rgba(255,255,255,.08)}
+  footer{text-align:center;color:var(--muted);font-size:.82rem;padding:8px 10px 50px;line-height:1.8}
+  footer b{color:var(--ink)}
+</style>
+</head>
+<body>
+<canvas id="bubbles"></canvas>
+<div class="glow" style="width:300px;height:300px;top:8%;left:-70px"></div>
+<div class="glow b" style="width:320px;height:320px;top:62%;right:-80px"></div>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">SELF-CARE KIT</div>
+    <h1>あなたのタイプ別<br>ストレス・セルフケアキット</h1>
+    <p class="lead">診断で出た「あなたの動物タイプ」を選ぶと、研究的に効きやすいセルフケアと、続けやすい記録ツールが使えます。</p>
+  </header>
+
+  <section class="card" id="pickCard">
+    <h2><span class="d"></span>あなたのタイプを選ぶ</h2>
+    <p class="note">診断結果の動物をタップ。（あとで変更もできます）</p>
+    <div class="picker" id="picker"></div>
+  </section>
+
+  <section class="card hidden" id="careCard">
+    <h2><span class="d"></span>あなたのタイプと、効くケア <button class="change" id="changeBtn">変更</button></h2>
+    <div class="me" id="meHead"></div>
+    <div class="row2" id="trBlock"></div>
+    <div class="row2 sci" id="sciBlock"></div>
+  </section>
+
+  <section class="card hidden" id="checkCard">
+    <h2><span class="d"></span>今日のセルフケア チェック</h2>
+    <p class="note">あなたのタイプに合わせた、今日できる小さなケア。チェックは自動保存されます。</p>
+    <div class="checks" id="checks"></div>
+  </section>
+
+  <section class="card hidden" id="breathCard">
+    <h2><span class="d"></span>1分の呼吸リセット</h2>
+    <p class="note">どのタイプにも効く、即効のリセット。円に合わせて、吸って・止めて・吐く。</p>
+    <div class="breath">
+      <div class="bc" id="bc"><div><div class="bw" id="bw">準備OK?</div><div class="bcnt" id="bcnt">ボタンを押してね</div></div></div>
+      <button class="bbtn" id="bbtn">はじめる</button>
+    </div>
+  </section>
+
+  <section class="card hidden" id="logCard">
+    <h2><span class="d"></span>気分ログ</h2>
+    <p class="note">今の気分とひとことを記録。続けると、自分が回復するパターンが見えてきます。（自動保存）</p>
+    <div class="field"><label>日付</label><input type="date" id="lgDate"></div>
+    <div class="field"><label>今の気分</label>
+      <div class="mood" id="mood"><span data-v="1">😣</span><span data-v="2">😟</span><span data-v="3">😐</span><span data-v="4">🙂</span><span data-v="5">😌</span></div>
+    </div>
+    <div class="field"><label>ひとことメモ（何にストレス? 何で少しラクになった?）</label><textarea id="lgMemo" placeholder="例: 仕事で焦った。散歩したら少し落ち着いた。"></textarea></div>
+    <div><button class="save-btn" id="lgAdd">記録する</button><span class="flash" id="flash">保存しました ✓</span></div>
+    <div class="logs" id="logs"></div>
+    <div style="margin-top:16px"><button class="reset" id="reset">保存データを消す</button></div>
+  </section>
+
+  <footer>
+    ※これは性格傾向の“読み物”診断とセルフケア補助で、医療ではありません。<br>
+    <b>つらさが強い・長く続くときは、無理せず頼ってください：</b> かかりつけ医・心療内科／精神科｜お住まいの<b>精神保健福祉センター</b>（心の健康の公的窓口）｜気持ちが追い詰められるときは、いのちの電話などの窓口へ。<br>※相談先情報は変わることがあります。最新は各公式サイトでご確認ください。
+  </footer>
+</div>
+
+<script>
+const TYPES={
+ "O_A_F":{a:"🐬",t:"イルカ型",c:"発散アクティブ",tr:"人に話し、動いて発散したいタイプ。感情表現が豊か。",
+   sci:"運動・身体活動が好相性（気分を上げるエンドルフィン）。信頼できる人に話す“社会的サポート”、歌う・書くなどの発散も◎。",
+   list:["今日10分でも体を動かした（散歩・ストレッチ等）","信頼できる人に、今の気持ちを少し話した","吐き出した後、できる一歩を1つ決めた"]},
+ "O_A_L":{a:"🐺",t:"オオカミ型",c:"解決ハンター",tr:"ストレス源を即対処。計画して動く問題解決タイプ。",
+   sci:"研究でいう“問題焦点型コーピング”が好相性。課題を分解し、計画・情報収集・相談で状況に働きかける。",
+   list:["悩みを「変えられる/変えられない」に仕分けた","変えられる事を1つ、小さな行動に分解した","変えられない事は、一旦“手放す”と決めた"]},
+ "O_S_F":{a:"🦦",t:"ラッコ型",c:"おしゃべり癒やし",tr:"つらいと話して気を紛らわせ、ゆるく休んで回復したい。",
+   sci:"社会的サポート（話す・つながる）とリラックス活動。笑い・ユーモアもストレス緩和に役立つとされる。",
+   list:["誰かと話す/つながる時間をとった","ちゃんと休む時間を確保した","クスッと笑えることに触れた"]},
+ "O_S_L":{a:"🐘",t:"ゾウ型",c:"どっしり相談役",tr:"冷静に状況を見て、必要なら相談して落ち着いて対処。",
+   sci:"信頼できる人との対話＋現実的な計画。十分な睡眠・規則正しい生活が土台。",
+   list:["人を支える前に、自分のケアも予定に入れた","睡眠・食事・生活リズムを整えた","自分のSOSを、誰かに少し伝えた"]},
+ "I_A_F":{a:"🐿️",t:"リス型",c:"ぐるぐる多動",tr:"不安を抱えつつ落ち着かず動き回る。頭がぐるぐる。",
+   sci:"マインドフルネス・呼吸法で“今ここ”に戻すのが効きやすい。考えを紙に書き出す、軽い運動も◎。",
+   list:["頭の中のぐるぐるを、紙に書き出した","数分の呼吸/マインドフルネスをした","意図的に“立ち止まる”時間をとった"]},
+ "I_A_L":{a:"🦫",t:"ビーバー型",c:"黙々没頭",tr:"黙って没頭に逃げ込み、自力で何とかしようとする。",
+   sci:"問題焦点型（タスク分解）＋意識的な休憩。没頭の合間に体を動かすと回復しやすい。",
+   list:["やることを小さなタスクに分解した","没頭の合間に、意識して休憩をとった","“相談は弱さじゃない”と自分に言った"]},
+ "I_S_F":{a:"🦔",t:"ハリネズミ型",c:"抱え込み繊細",tr:"刺激に敏感で、つらいと殻にこもり感情を内に溜める。",
+   sci:"セルフコンパッション（自分を責めない）が保護要因になりうる。書く・描く表現や、安心できる相手に少しだけ話すのも◎。",
+   list:["自分を責める言葉を、やさしい言葉に変えた","気持ちを書く/描くなどで外に出した","安心できる相手に、少しだけ気持ちを話した"]},
+ "I_S_L":{a:"🐢",t:"カメ型",c:"静かに省エネ",tr:"殻にこもり、静かに省エネして嵐が過ぎるのを待つ。",
+   sci:"十分な休養・睡眠が最優先。マインドフルネスで心を整え、無理に動かず回復を優先するのが合いやすい。",
+   list:["しっかり休む/眠る時間を確保した","無理に動かず、回復を優先した","細くても、誰か一人とつながりを保った"]}
+};
+const ORDER=["O_A_F","O_A_L","O_S_F","O_S_L","I_A_F","I_A_L","I_S_F","I_S_L"];
+
+const KEY="stress_kit_v1";
+let st=load();
+function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{type:null,checks:{},logs:[]};}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+
+const picker=document.getElementById('picker');
+ORDER.forEach(code=>{const t=TYPES[code];const b=document.createElement('div');b.className='pick';
+  b.innerHTML=`<div class="e">${t.a}</div><div class="n">${t.t.replace('型','')}</div>`;
+  b.onclick=()=>{st.type=code;if(!st.checks[code])st.checks[code]=[false,false,false];save();renderAll();
+    window.scrollTo({top:document.getElementById('careCard').offsetTop-20,behavior:'smooth'});};
+  picker.appendChild(b);});
+document.getElementById('changeBtn').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
+
+function renderAll(){
+  if(!st.type)return;const code=st.type,t=TYPES[code];
+  ['careCard','checkCard','breathCard','logCard'].forEach(id=>document.getElementById(id).classList.remove('hidden'));
+  [...picker.children].forEach((el,i)=>el.classList.toggle('sel',ORDER[i]===code));
+  document.getElementById('meHead').innerHTML=`<div class="big">${t.a}</div><div><div class="name">${t.t}</div><div class="catch">「${t.c}」</div></div>`;
+  document.getElementById('trBlock').innerHTML=`<h3>🧠 あなたのストレス傾向</h3><p>${t.tr}</p>`;
+  document.getElementById('sciBlock').innerHTML=`<h3>🌿 効きやすい解消法（研究より）</h3><p>${t.sci}</p>`;
+  const checks=document.getElementById('checks');checks.innerHTML='';
+  if(!st.checks[code])st.checks[code]=[false,false,false];
+  t.list.forEach((item,i)=>{const d=document.createElement('div');d.className='check'+(st.checks[code][i]?' done':'');
+    d.innerHTML=`<div class="cbox"><svg viewBox="0 0 24 24" fill="none" stroke="#08191c" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="t">${item}</div>`;
+    d.onclick=()=>{st.checks[code][i]=!st.checks[code][i];save();renderAll();};checks.appendChild(d);});
+  document.getElementById('lgDate').value=document.getElementById('lgDate').value||today();
+  renderLogs();
+}
+
+/* 呼吸 4-7-8 */
+const phases=[{w:"吸って",d:4,s:1.32},{w:"止めて",d:7,s:1.32},{w:"吐いて",d:8,s:.8}];
+let run=false,pi=0,rem=0,tm=null;
+const bc=document.getElementById('bc'),bw=document.getElementById('bw'),bcnt=document.getElementById('bcnt'),bbtn=document.getElementById('bbtn');
+bbtn.onclick=()=>{if(run){stop();return;}run=true;bbtn.textContent="やめる";pi=0;tick();};
+function stop(){run=false;clearInterval(tm);bbtn.textContent="はじめる";bw.textContent="おつかれさま";bcnt.textContent="ゆっくりね";bc.style.transform="scale(1)";}
+function tick(){const p=phases[pi];rem=p.d;bw.textContent=p.w;bcnt.textContent=rem+" 秒";
+  bc.style.transition="transform "+p.d+"s ease-in-out";bc.style.transform="scale("+p.s+")";
+  clearInterval(tm);tm=setInterval(()=>{rem--;if(rem<=0){pi=(pi+1)%phases.length;tick();}else bcnt.textContent=rem+" 秒";},1000);}
+
+/* 気分ログ */
+const today=()=>new Date().toLocaleDateString('sv-SE');
+let moodSel="";const moodEl=document.getElementById('mood');
+moodEl.querySelectorAll('span').forEach(s=>s.onclick=()=>{moodEl.querySelectorAll('span').forEach(x=>x.classList.remove('sel'));s.classList.add('sel');moodSel=s.dataset.v;});
+const logsEl=document.getElementById('logs');
+function renderLogs(){logsEl.innerHTML='';const faces={1:"😣",2:"😟",3:"😐",4:"🙂",5:"😌"};
+  st.logs.slice().reverse().forEach((l,ri)=>{const idx=st.logs.length-1-ri;const div=document.createElement('div');div.className='logitem';
+    div.innerHTML=`<span class="d">${l.date||""}</span>${l.mood?`<span style="font-size:1.1rem">${faces[l.mood]||""}</span>`:""}<span class="m">${l.memo?esc(l.memo):""}</span><button class="del">×</button>`;
+    div.querySelector('.del').onclick=()=>{st.logs.splice(idx,1);save();renderLogs();};logsEl.appendChild(div);});}
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+document.getElementById('lgAdd').onclick=()=>{const date=document.getElementById('lgDate').value||today();const memo=document.getElementById('lgMemo').value.trim();
+  if(!memo&&!moodSel)return;st.logs.push({date,mood:moodSel,memo});save();renderLogs();
+  document.getElementById('lgMemo').value="";moodSel="";moodEl.querySelectorAll('span').forEach(x=>x.classList.remove('sel'));
+  const f=document.getElementById('flash');f.classList.add('show');setTimeout(()=>f.classList.remove('show'),1400);};
+document.getElementById('reset').onclick=()=>{if(confirm("選んだタイプ・チェック・気分ログをすべて消します。よろしいですか?")){
+  st={type:null,checks:{},logs:[]};save();['careCard','checkCard','breathCard','logCard'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  [...picker.children].forEach(el=>el.classList.remove('sel'));window.scrollTo({top:0,behavior:'smooth'});}};
+
+/* 泡 */
+const cv=document.getElementById('bubbles'),cx=cv.getContext('2d');let bs=[];
+function rs(){cv.width=innerWidth;cv.height=innerHeight;}addEventListener('resize',rs);rs();
+function spawn(){return{x:Math.random()*cv.width,y:cv.height+20,r:Math.random()*8+3,sp:Math.random()*.5+.2,sw:Math.random()*.8-.4,a:Math.random()*.35+.15,ph:Math.random()*6}}
+for(let i=0;i<26;i++){const b=spawn();b.y=Math.random()*cv.height;bs.push(b);}
+function loop(){cx.clearRect(0,0,cv.width,cv.height);for(const b of bs){b.y-=b.sp;b.ph+=0.02;b.x+=b.sw+Math.sin(b.ph)*.2;
+  cx.beginPath();cx.arc(b.x,b.y,b.r,0,7);cx.fillStyle='rgba(120,230,212,'+(b.a*(.6+Math.sin(b.ph)*.4))+')';cx.fill();
+  if(b.y<-20)Object.assign(b,spawn());}requestAnimationFrame(loop);}
+loop();
+
+document.getElementById('lgDate').value=today();
+renderAll();
+</script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<!--
+═══════════════════════════════════════════════════════════════
+  ストレスタイプ診断メーカー（8動物タイプ）/ 記事冒頭・無料設置用
+  ─ シェアで広がる設計 ─
+
+  【設置】このファイル(.html)をGitHub Pages等に置き、記事にURLを貼る。
+  結果はブラウザに保存、やり直し可。
+  ★シェアリンク：下の SHARE_URL を拡散したいURL(note記事 or プロフィール)に。
+  ※これは性格傾向の“読み物”診断です。医療ではありません。つらさが続く・
+   強いときは専門家や相談窓口へ(結果末尾に案内)。
+═══════════════════════════════════════════════════════════════
+-->
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ストレスタイプ診断 ─ あなたの心の守り方は?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Shippori+Mincho:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#0e2a2e;--bg2:#123a3c;--bg3:#08191c;
+    --ink:#eafaf6;--muted:#9fc7c1;
+    --teal:#3fd6c0;--teal2:#79e6d4;--sky:#6fb6ff;--gold:#ffe2a0;--mint:#aef0dd;
+    --panel:rgba(20,55,58,.5);--panel-br:rgba(120,220,205,.2);
+    --display:'Shippori Mincho',serif;--body:'Zen Maru Gothic',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--body);color:var(--ink);min-height:100vh;overflow-x:hidden;line-height:1.85;
+    background:linear-gradient(160deg,#0e2a2e,#123a3c 45%,#08191c)}
+  #bubbles{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .glow{position:fixed;border-radius:50%;filter:blur(60px);opacity:.35;z-index:0;pointer-events:none;
+    background:radial-gradient(circle,var(--teal),transparent 70%);animation:float 26s ease-in-out infinite}
+  .glow.b{background:radial-gradient(circle,var(--sky),transparent 70%);animation-duration:32s}
+  @keyframes float{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-40px)}}
+  .wrap{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:0 18px}
+
+  header{text-align:center;padding:62px 0 18px}
+  .eyebrow{font-size:.74rem;letter-spacing:.3em;color:var(--teal2);margin-bottom:14px}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(1.9rem,6.6vw,3rem);line-height:1.32;text-shadow:0 0 26px rgba(63,214,192,.35)}
+  h1 em{font-style:normal;color:var(--teal)}
+  .lead{color:var(--muted);margin:16px auto 0;max-width:46ch;font-size:1rem}
+
+  .card{background:var(--panel);border:1px solid var(--panel-br);border-radius:22px;padding:28px 24px;margin:24px 0;
+    backdrop-filter:blur(8px);box-shadow:0 24px 70px -34px rgba(0,0,0,.7)}
+
+  .start-btn,.share-btn,.retry{font-family:var(--body);font-weight:700;border:none;cursor:pointer;transition:.25s}
+  .start-btn{font-size:1.15rem;color:#08191c;background:linear-gradient(135deg,var(--teal2),var(--teal));
+    padding:15px 44px;border-radius:999px;box-shadow:0 14px 34px -12px rgba(63,214,192,.8)}
+  .start-btn:hover{transform:translateY(-3px);filter:brightness(1.06)}
+
+  .qwrap{display:none}
+  .progress{height:7px;background:rgba(255,255,255,.12);border-radius:99px;overflow:hidden;margin-bottom:8px}
+  .bar{height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--gold));transition:width .4s ease}
+  .qcount{font-size:.8rem;color:var(--muted);text-align:right;margin-bottom:18px}
+  .qtext{font-family:var(--display);font-size:1.4rem;line-height:1.5;margin-bottom:22px;min-height:2.2em}
+  .opts{display:grid;gap:12px}
+  .opt{background:rgba(255,255,255,.06);border:1px solid var(--panel-br);border-radius:14px;padding:15px 18px;cursor:pointer;transition:.2s;font-size:1.02rem}
+  .opt:hover{background:rgba(63,214,192,.16);border-color:var(--teal);transform:translateX(4px)}
+
+  .result{display:none;text-align:center}
+  .reveal{animation:pop .7s cubic-bezier(.2,.9,.3,1.4)}
+  @keyframes pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+  .animal{font-size:5.2rem;line-height:1;margin:6px 0 4px;filter:drop-shadow(0 6px 20px rgba(63,214,192,.5))}
+  .rtype{font-family:var(--display);font-weight:800;font-size:2rem;color:var(--teal)}
+  .rcatch{font-size:1.08rem;color:var(--gold);margin:4px 0 16px}
+  .axes{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px 0}
+  .axes span{font-size:.8rem;background:rgba(63,214,192,.16);border:1px solid var(--panel-br);padding:5px 12px;border-radius:99px;color:var(--teal2)}
+  .rblock{text-align:left;background:rgba(255,255,255,.05);border:1px solid var(--panel-br);border-radius:14px;padding:16px 18px;margin:12px 0}
+  .rblock h3{font-family:var(--display);font-size:1.05rem;margin-bottom:6px;color:var(--teal2)}
+  .rblock p{font-size:.97rem}
+  .rblock.sci{border-color:rgba(255,226,160,.4);background:rgba(255,226,160,.08)}
+  .rblock.sci h3{color:var(--gold)}
+
+  .share-title{font-family:var(--display);font-size:1.1rem;margin:24px 0 12px}
+  .shares{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .share-btn{font-size:.98rem;color:#fff;padding:12px 22px;border-radius:999px;display:inline-flex;align-items:center;gap:8px}
+  .sb-x{background:#000}.sb-line{background:#06c755}.sb-copy{background:rgba(255,255,255,.14);border:1px solid var(--panel-br)}
+  .share-btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
+  .copied{font-size:.82rem;color:var(--gold);opacity:0;transition:.3s;margin-top:8px}
+  .copied.show{opacity:1}
+
+  .cta{margin-top:22px;background:rgba(255,226,160,.1);border:1px solid rgba(255,226,160,.4);border-radius:14px;padding:16px 18px;font-size:.96rem}
+  .cta b{color:var(--gold)}
+  .retry{background:transparent;border:1px solid var(--panel-br);color:var(--muted);padding:10px 22px;border-radius:999px;font-size:.86rem;margin-top:18px}
+  .retry:hover{background:rgba(255,255,255,.08)}
+  footer{text-align:center;color:var(--muted);font-size:.8rem;padding:22px 10px 60px;line-height:1.7}
+</style>
+</head>
+<body>
+<canvas id="bubbles"></canvas>
+<div class="glow" style="width:300px;height:300px;top:10%;left:-70px"></div>
+<div class="glow b" style="width:320px;height:320px;top:60%;right:-80px"></div>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">STRESS TYPE DIAGNOSIS</div>
+    <h1>あなたの<em>ストレス</em>タイプは?<br>心の守り方を、動物で診断</h1>
+    <p class="lead">9つの質問でわかる、あなたのストレス傾向と「研究的に効きやすい解消法」。8種類の動物のどれかな?</p>
+  </header>
+
+  <div class="card" id="introCard" style="text-align:center">
+    <p style="margin-bottom:20px">最近の自分を思い浮かべて、直感で答えてね🌿</p>
+    <button class="start-btn" id="startBtn">診断をはじめる</button>
+  </div>
+
+  <div class="card qwrap" id="qwrap">
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="qcount" id="qcount"></div>
+    <div class="qtext" id="qtext"></div>
+    <div class="opts" id="opts"></div>
+  </div>
+
+  <div class="card result" id="result"></div>
+
+  <footer>※これは性格傾向をもとにした“読み物”の診断です。医療ではありません。<br>つらさが強い・長く続くときは、無理せず専門家や相談窓口に頼ってください。</footer>
+</div>
+
+<script>
+/* ===== シェアで誘導したいURL（書き換え可） ===== */
+const SHARE_URL = "https://note.com/famous_broom714";
+/* ============================================== */
+
+const TYPES={
+ "O_A_F":{a:"🐬",t:"イルカ型",c:"発散アクティブ",
+   tr:"ストレスを感じると人に話し、動いて発散したいタイプ。感情表現が豊か。",
+   sci:"運動・身体活動が好相性（気分を上げるエンドルフィンが出るとされる）。信頼できる人に話す“社会的サポート”、歌う・書くなどの発散も◎。",
+   note:"発散が“愚痴の無限ループ”になると逆効果。吐き出したら、小さな解決の一歩へ。"},
+ "O_A_L":{a:"🐺",t:"オオカミ型",c:"解決ハンター",
+   tr:"ストレス源を見つけたら即対処。計画して動く問題解決タイプ。",
+   sci:"研究でいう“問題焦点型コーピング”が最も噛み合う。課題を分解し、計画・情報収集・相談で状況そのものに働きかけよう。",
+   note:"何でも解決しようとして“変えられない事”まで抱えがち。手放す練習も大切。"},
+ "O_S_F":{a:"🦦",t:"ラッコ型",c:"おしゃべり癒やし",
+   tr:"つらいと誰かと話して気を紛らわせ、ゆるく休んで回復したいタイプ。",
+   sci:"社会的サポート（話す・つながる）とリラックス活動が効きやすい。笑い・ユーモアもストレス緩和に役立つとされる。",
+   note:"気晴らしだけで先延ばしにすると問題が膨らむ。話した後に一歩動けると◎。"},
+ "O_S_L":{a:"🐘",t:"ゾウ型",c:"どっしり相談役",
+   tr:"動じず冷静に状況を見て、必要なら相談して落ち着いて対処するタイプ。",
+   sci:"信頼できる人との対話＋現実的な計画が好相性。十分な睡眠・規則正しい生活が土台に。",
+   note:"周りを支えすぎて自分のSOSを後回しにしがち。自分のケアも予定に入れて。"},
+ "I_A_F":{a:"🐿️",t:"リス型",c:"ぐるぐる多動",
+   tr:"不安を抱えつつ落ち着かず動き回る。頭の中がぐるぐるしやすいタイプ。",
+   sci:"マインドフルネス・呼吸法で“今ここ”に戻すのが効きやすいとされる。考えを紙に書き出す、軽い運動も◎。",
+   note:"忙しさで不安を埋めようとして消耗しがち。意図的に立ち止まる時間を。"},
+ "I_A_L":{a:"🦫",t:"ビーバー型",c:"黙々没頭",
+   tr:"つらいと黙って作業や没頭に逃げ込み、自力で何とかしようとするタイプ。",
+   sci:"問題焦点型（タスク分解）＋意識的な休憩が好相性。没頭の合間に体を動かすと回復しやすい。",
+   note:"抱え込んで人に頼れないことも。“相談は弱さじゃない”と覚えておいて。"},
+ "I_S_F":{a:"🦔",t:"ハリネズミ型",c:"抱え込み繊細",
+   tr:"刺激に敏感で、つらいと殻にこもり動けなくなる。感情を内に溜めるタイプ。",
+   sci:"セルフコンパッション（自分を責めない）が保護要因になりうるとされる。書く・描く表現や、安心できる相手に少しだけ話すのも◎。",
+   note:"ひとりで抱えすぎる傾向。こもりが長引くなら、専門家や窓口に頼って。"},
+ "I_S_L":{a:"🐢",t:"カメ型",c:"静かに省エネ",
+   tr:"ストレス時は殻にこもり、静かに省エネして嵐が過ぎるのを待つ冷静派。",
+   sci:"十分な休養・睡眠が最優先。マインドフルネスで心を整え、無理に動かず回復を優先するのが合いやすい。",
+   note:"こもりすぎて孤立すると回復が遅れる。細くても一本、人とのつながりを。"}
+};
+const AXLBL={O:"外に出す",I:"内にためる",A:"動いて対処",S:"静かに休む",F:"感情が動く",L:"冷静に処理"};
+
+const Q=[
+ {q:"強いストレスを感じた直後、どうしがち?",ax:"1",o:[["人に話す/外に出して発散","O"],["まず一人で抱えて考える","I"]]},
+ {q:"モヤモヤしたとき",ax:"1",o:[["誰かに聞いてほしくなる","O"],["そっとしておいてほしい","I"]]},
+ {q:"つらい気持ちは",ax:"1",o:[["表に出るタイプ","O"],["内に溜めるタイプ","I"]]},
+ {q:"ストレス源に対して",ax:"2",o:[["動いて対処したくなる","A"],["いったん固まる/休みたい","S"]]},
+ {q:"忙しくて余裕がないと",ax:"2",o:[["とにかく手を動かす","A"],["何も手につかなくなる","S"]]},
+ {q:"疲れがたまると",ax:"2",o:[["予定を詰めて気を紛らす","A"],["省エネで引きこもる","S"]]},
+ {q:"嫌なことがあったとき",ax:"3",o:[["気持ちが大きく揺れる","F"],["わりと冷静でいられる","L"]]},
+ {q:"問題に直面すると",ax:"3",o:[["まず感情がわき上がる","F"],["まず頭で整理する","L"]]},
+ {q:"自分はどちらかというと",ax:"3",o:[["感情型","F"],["理屈型","L"]]},
+];
+
+let qi=0,score={"1":{O:0,I:0},"2":{A:0,S:0},"3":{F:0,L:0}};
+const introCard=document.getElementById('introCard'),qwrap=document.getElementById('qwrap'),resultEl=document.getElementById('result'),
+ bar=document.getElementById('bar'),qcount=document.getElementById('qcount'),qtext=document.getElementById('qtext'),opts=document.getElementById('opts');
+
+document.getElementById('startBtn').onclick=()=>{introCard.style.display='none';qwrap.style.display='block';renderQ();};
+function renderQ(){
+  const cur=Q[qi];bar.style.width=(qi/Q.length*100)+'%';qcount.textContent=`Q ${qi+1} / ${Q.length}`;qtext.textContent=cur.q;opts.innerHTML='';
+  cur.o.forEach(([label,val])=>{const b=document.createElement('div');b.className='opt';b.textContent=label;
+    b.onclick=()=>{score[cur.ax][val]++;qi++;if(qi<Q.length)renderQ();else finish();};opts.appendChild(b);});
+}
+function pick(ax){const k=Object.keys(score[ax]);return score[ax][k[0]]>=score[ax][k[1]]?k[0]:k[1];}
+function finish(){bar.style.width='100%';const code=[pick('1'),pick('2'),pick('3')].join('_');const t=TYPES[code];
+  try{localStorage.setItem('stress_type_result',JSON.stringify({code,t}));}catch(e){}
+  qwrap.style.display='none';showResult(code,t);}
+function showResult(code,t){
+  const axes=code.split('_').map(c=>AXLBL[c]);
+  resultEl.style.display='block';resultEl.classList.add('reveal');
+  const shareText=`私のストレスタイプは【${t.t}】${t.a}「${t.c}」でした！\n自分に効くストレス解消法もわかったよ🌿 あなたは何タイプ? #ストレスタイプ診断`;
+  const xUrl=`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText+"\n")}&url=${encodeURIComponent(SHARE_URL)}`;
+  const lineUrl=`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(SHARE_URL)}&text=${encodeURIComponent(shareText)}`;
+  resultEl.innerHTML=`
+    <div class="eyebrow" style="color:var(--teal2)">YOUR STRESS TYPE</div>
+    <div class="animal">${t.a}</div>
+    <div class="rtype">${t.t}</div>
+    <div class="rcatch">「${t.c}」</div>
+    <div class="axes">${axes.map(a=>`<span>${a}</span>`).join('')}</div>
+    <div class="rblock"><h3>🧠 あなたのストレス傾向</h3><p>${t.tr}</p></div>
+    <div class="rblock sci"><h3>🌿 効きやすい解消法（研究より）</h3><p>${t.sci}</p></div>
+    <div class="rblock"><h3>⚠️ 気をつけたい落とし穴</h3><p>${t.note}</p></div>
+    <div class="share-title">結果をシェアしよう（あなたは何タイプ?と聞いてみて🌿）</div>
+    <div class="shares">
+      <a class="share-btn sb-x" href="${xUrl}" target="_blank" rel="noopener">𝕏 でシェア</a>
+      <a class="share-btn sb-line" href="${lineUrl}" target="_blank" rel="noopener">LINEで送る</a>
+      <button class="share-btn sb-copy" id="copyBtn">🔗 リンクをコピー</button>
+    </div>
+    <div class="copied" id="copied">コピーしました！</div>
+    <div class="cta">🎁 <b>あなたのタイプ専用の「ストレス対処キット」</b>は、記事の特典ツールで。今日からできるセルフケアと、気分の記録ができます。自分のタイプ（${t.t}）を覚えて続きへ！</div>
+    <button class="retry" id="retryBtn">もう一度診断する</button>`;
+  document.getElementById('copyBtn').onclick=async()=>{const txt=shareText+"\n"+SHARE_URL;
+    try{await navigator.clipboard.writeText(txt);}catch(e){const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();}
+    const c=document.getElementById('copied');c.classList.add('show');setTimeout(()=>c.classList.remove('show'),1600);};
+  document.getElementById('retryBtn').onclick=()=>{qi=0;score={"1":{O:0,I:0},"2":{A:0,S:0},"3":{F:0,L:0}};
+    resultEl.style.display='none';resultEl.classList.remove('reveal');qwrap.style.display='block';renderQ();window.scrollTo({top:0,behavior:'smooth'});};
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* 泡パーティクル（癒やし系） */
+const cv=document.getElementById('bubbles'),cx=cv.getContext('2d');let bs=[];
+function rs(){cv.width=innerWidth;cv.height=innerHeight;}addEventListener('resize',rs);rs();
+function spawn(){return{x:Math.random()*cv.width,y:cv.height+20,r:Math.random()*8+3,sp:Math.random()*.5+.2,sw:Math.random()*.8-.4,a:Math.random()*.35+.15,ph:Math.random()*6}}
+for(let i=0;i<28;i++){const b=spawn();b.y=Math.random()*cv.height;bs.push(b);}
+function loop(){cx.clearRect(0,0,cv.width,cv.height);for(const b of bs){b.y-=b.sp;b.ph+=0.02;b.x+=b.sw+Math.sin(b.ph)*.2;
+  cx.beginPath();cx.arc(b.x,b.y,b.r,0,7);cx.fillStyle='rgba(120,230,212,'+(b.a*(.6+Math.sin(b.ph)*.4))+')';cx.fill();
+  if(b.y<-20)Object.assign(b,spawn());}requestAnimationFrame(loop);}
+loop();
+</script>
+</body>
+</html>
