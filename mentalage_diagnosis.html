@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<!--
+=================================================================
+  本当の年齢診断（精神年齢メーカー）/ 記事冒頭・無料設置用
+  ─ シェアで広がる設計 ─
+  【設置】GitHub Pages等に置き、記事にURLを貼る。結果は保存・やり直し可。
+  ★シェア：下の SHARE_URL を拡散したいURL(note記事 or プロフィール)に。
+  ※性格傾向をもとにした“遊び”の診断です。優劣を測るものではありません。
+=================================================================
+-->
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>本当の年齢診断 ─ あなたの精神年齢は?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Shippori+Mincho:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#1a1535;--bg2:#241a4a;--bg3:#0e0a22;--ink:#f0ecff;--muted:#b3a9d6;
+    --p1:#8b7bff;--p2:#b59cff;--cyan:#54e6e0;--gold:#ffd56b;--pink:#ff8fce;
+    --panel:rgba(48,38,92,.5);--panel-br:rgba(160,140,255,.24);
+    --display:'Shippori Mincho',serif;--body:'Zen Maru Gothic',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--body);color:var(--ink);min-height:100vh;overflow-x:hidden;line-height:1.8;
+    background:linear-gradient(160deg,#1a1535,#241a4a 48%,#0e0a22)}
+  #stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .glow{position:fixed;border-radius:50%;filter:blur(60px);opacity:.4;z-index:0;pointer-events:none;
+    background:radial-gradient(circle,var(--p1),transparent 70%);animation:f 26s ease-in-out infinite}
+  .glow.b{background:radial-gradient(circle,var(--cyan),transparent 70%);animation-duration:32s}
+  @keyframes f{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-40px)}}
+  .wrap{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:0 18px}
+
+  header{text-align:center;padding:60px 0 18px}
+  .eyebrow{font-size:.74rem;letter-spacing:.3em;color:var(--p2);margin-bottom:14px}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,7vw,3.1rem);line-height:1.3;text-shadow:0 0 28px rgba(139,123,255,.45)}
+  h1 em{font-style:normal;color:var(--cyan)}
+  .lead{color:var(--muted);margin:16px auto 0;max-width:46ch;font-size:1rem}
+
+  .card{background:var(--panel);border:1px solid var(--panel-br);border-radius:22px;padding:28px 24px;margin:24px 0;backdrop-filter:blur(8px);box-shadow:0 24px 70px -34px rgba(0,0,0,.7)}
+  .start-btn,.share-btn,.retry{font-family:var(--body);font-weight:700;border:none;cursor:pointer;transition:.25s}
+  .start-btn{font-size:1.15rem;color:#1a1535;background:linear-gradient(135deg,var(--p2),var(--cyan));padding:15px 44px;border-radius:999px;box-shadow:0 14px 34px -12px rgba(139,123,255,.8)}
+  .start-btn:hover{transform:translateY(-3px);filter:brightness(1.06)}
+
+  .agewrap{display:none}
+  .field{margin-bottom:8px}
+  label{display:block;font-size:.9rem;color:var(--muted);margin-bottom:8px}
+  input[type=number]{width:140px;background:rgba(14,10,34,.6);border:1px solid var(--panel-br);border-radius:10px;color:var(--ink);font-family:var(--body);font-size:1.1rem;padding:11px 13px;text-align:center}
+  input:focus{outline:none;border-color:var(--p1)}
+  .small{color:var(--muted);font-size:.8rem;margin-top:6px}
+
+  .qwrap{display:none}
+  .progress{height:7px;background:rgba(255,255,255,.12);border-radius:99px;overflow:hidden;margin-bottom:8px}
+  .bar{height:100%;width:0;background:linear-gradient(90deg,var(--p1),var(--gold));transition:width .4s ease}
+  .qcount{font-size:.8rem;color:var(--muted);text-align:right;margin-bottom:18px}
+  .qtext{font-family:var(--display);font-size:1.4rem;line-height:1.5;margin-bottom:22px;min-height:2.2em}
+  .opts{display:grid;gap:12px}
+  .opt{background:rgba(255,255,255,.06);border:1px solid var(--panel-br);border-radius:14px;padding:15px 18px;cursor:pointer;transition:.2s;font-size:1.02rem}
+  .opt:hover{background:rgba(139,123,255,.2);border-color:var(--p1);transform:translateX(4px)}
+
+  .result{display:none;text-align:center}
+  .reveal{animation:pop .7s cubic-bezier(.2,.9,.3,1.4)}
+  @keyframes pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+  .bignum{font-family:var(--display);font-weight:800;font-size:5.4rem;line-height:1;color:var(--cyan);text-shadow:0 0 40px rgba(84,230,224,.5)}
+  .bignum small{font-size:1.6rem;color:var(--ink)}
+  .persona{font-family:var(--display);font-size:1.9rem;color:var(--p2);margin-top:6px}
+  .gap{display:inline-block;margin:14px 0;background:rgba(255,213,107,.14);border:1px solid rgba(255,213,107,.4);border-radius:999px;padding:8px 18px;color:var(--gold);font-size:.96rem}
+  .rblock{text-align:left;background:rgba(255,255,255,.05);border:1px solid var(--panel-br);border-radius:14px;padding:16px 18px;margin:12px 0}
+  .rblock h3{font-family:var(--display);font-size:1.05rem;margin-bottom:6px;color:var(--p2)}
+  .rblock p{font-size:.97rem}
+
+  .share-title{font-family:var(--display);font-size:1.1rem;margin:24px 0 12px}
+  .shares{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .share-btn{font-size:.98rem;color:#fff;padding:12px 22px;border-radius:999px}
+  .sb-x{background:#000}.sb-line{background:#06c755}.sb-copy{background:rgba(255,255,255,.14);border:1px solid var(--panel-br)}
+  .share-btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
+  .copied{font-size:.82rem;color:var(--gold);opacity:0;transition:.3s;margin-top:8px}.copied.show{opacity:1}
+  .cta{margin-top:22px;background:rgba(84,230,224,.1);border:1px solid rgba(84,230,224,.4);border-radius:14px;padding:16px 18px;font-size:.96rem}
+  .cta b{color:var(--cyan)}
+  .retry{background:transparent;border:1px solid var(--panel-br);color:var(--muted);padding:10px 22px;border-radius:999px;font-size:.86rem;margin-top:18px}
+  .retry:hover{background:rgba(255,255,255,.08)}
+  footer{text-align:center;color:var(--muted);font-size:.8rem;padding:22px 10px 60px;line-height:1.7}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div class="glow" style="width:300px;height:300px;top:10%;left:-70px"></div>
+<div class="glow b" style="width:320px;height:320px;top:60%;right:-80px"></div>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">TRUE AGE DIAGNOSIS</div>
+    <h1>あなたの<em>精神年齢</em>は<br>本当は何歳?</h1>
+    <p class="lead">12の質問でわかる、あなたの“中身の年齢”。実年齢とのギャップに、きっと笑っちゃう。</p>
+  </header>
+
+  <div class="card" id="introCard" style="text-align:center">
+    <p style="margin-bottom:20px">直感で答えてね。最後に実年齢を入れると、ギャップがわかるよ🎂</p>
+    <button class="start-btn" id="startBtn">診断をはじめる</button>
+  </div>
+
+  <div class="card qwrap" id="qwrap">
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="qcount" id="qcount"></div>
+    <div class="qtext" id="qtext"></div>
+    <div class="opts" id="opts"></div>
+  </div>
+
+  <div class="card agewrap" id="ageCard">
+    <div class="field">
+      <label>最後に、あなたの実年齢を入れてください（任意・ギャップ表示に使うだけ）</label>
+      <input type="number" id="realAge" min="0" max="120" placeholder="例: 28">
+      <div class="small">入力しなくても診断結果は出ます。</div>
+    </div>
+    <button class="start-btn" id="showBtn" style="margin-top:16px">結果を見る</button>
+  </div>
+
+  <div class="card result" id="result"></div>
+
+  <footer>※これは性格傾向をもとにした“遊び”の診断です。精神年齢に良い・悪いはありません。<br>どの年齢にも、その人だけの魅力があります。楽しむきっかけにどうぞ。</footer>
+</div>
+
+<script>
+const SHARE_URL = "https://note.com/famous_broom714";
+
+/* ペルソナ：精神年齢の範囲ごと */
+const PERSONAS=[
+ {max:9, emoji:"🍭", name:"無邪気なこども", min:0,
+   d:"好奇心のかたまり。損得抜きで「楽しい!」に全力。一緒にいると場が明るくなる、天然の太陽みたいな人。",
+   pt:"勢いと素直さは最大の武器。ときどき“ひと呼吸”置くと、もっと無敵。"},
+ {max:15, emoji:"🎮", name:"青春まっただ中の少年少女", min:10,
+   d:"ノリと情熱で動く青春タイプ。飽きっぽいけど切り替えも早い。感情がまっすぐで、人を巻き込む力がある。",
+   pt:"その熱量、財産です。続ける仕組みを作れたら鬼に金棒。"},
+ {max:22, emoji:"🎧", name:"自由を愛する若者", min:16,
+   d:"トレンドに敏感で、フットワークが軽い。自分の「好き」を大事にする、しなやかな自由人。",
+   pt:"身軽さが強み。たまに先を見据えると、伸びしろが一気に開く。"},
+ {max:32, emoji:"☕", name:"バランスの取れた大人", min:23,
+   d:"遊びも責任も、ちょうどよく両立。周りからの信頼も厚い、頼れる“ちょうどいい大人”。",
+   pt:"安定感が魅力。たまには童心に戻ると、もっと面白くなる。"},
+ {max:45, emoji:"📚", name:"落ち着いた賢者見習い", min:33,
+   d:"冷静で思慮深く、感情に流されにくい。相談されることが多い、頼れるアドバイザー気質。",
+   pt:"その落ち着きは宝。直感や衝動も、たまには信じてみて。"},
+ {max:200, emoji:"🦉", name:"達観した仙人", min:46,
+   d:"何があっても動じない、悟りの境地。物事の本質を見抜き、些細なことに惑わされない大物の風格。",
+   pt:"その余裕、誰もが憧れます。若い人の勢いに乗っかる日があってもいい。"}
+];
+function persona(age){for(const p of PERSONAS){if(age<=p.max)return p;}return PERSONAS[PERSONAS.length-1];}
+
+/* 質問：各回答に「精神年齢の重み」を持たせ平均化。低い=幼い/高い=老成 */
+const Q=[
+ {q:"休日の理想の過ごし方は?",o:[["友達とワイワイ遊びまくる",12],["趣味や好きなことに没頭",24],["家でゆっくり休養",40]]},
+ {q:"新しいスマホアプリが流行ったら?",o:[["まず試す!乗り遅れたくない",14],["評判を見てから",30],["別に今のままでいい",46]]},
+ {q:"買い物のとき重視するのは?",o:[["欲しい!という気持ち",13],["コスパと必要性",33],["長く使えるか・本質",48]]},
+ {q:"感情が高ぶったとき",o:[["すぐ顔や態度に出る",12],["割と表に出さない",34],["静かに受け流せる",48]]},
+ {q:"将来のことを考えると?",o:[["なんとかなるっしょ!",14],["計画的に備えたい",36],["流れに任せる達観",46]]},
+ {q:"知らない人ばかりの集まりで",o:[["すぐ友達になれる",16],["様子を見て少しずつ",30],["一人でも平気",44]]},
+ {q:"失敗したとき",o:[["けっこう引きずる",15],["反省して切り替える",32],["人生こんなもんと笑う",48]]},
+ {q:"流行りの音楽や動画は?",o:[["常にチェックしてる",14],["たまに触れる程度",32],["昔のものが好き",46]]},
+ {q:"食事の好みは?",o:[["ジャンク&甘いもの大好き",13],["バランス重視",34],["渋い・素朴なものが好き",47]]},
+ {q:"会話で多いのは?",o:[["テンション高めのノリ",15],["落ち着いた雑談",33],["人生や本質的な話",47]]},
+ {q:"衝動買いをする?",o:[["よくある!",14],["たまに",30],["ほぼしない",45]]},
+ {q:"自分へのごほうびは?",o:[["とにかく楽しいこと",16],["ちょっと贅沢な体験",32],["静かな時間・健康",46]]},
+];
+
+let qi=0, sum=0, real=null;
+const introCard=document.getElementById('introCard'),qwrap=document.getElementById('qwrap'),ageCard=document.getElementById('ageCard'),resultEl=document.getElementById('result'),
+ bar=document.getElementById('bar'),qcount=document.getElementById('qcount'),qtext=document.getElementById('qtext'),opts=document.getElementById('opts');
+
+document.getElementById('startBtn').onclick=()=>{introCard.style.display='none';qwrap.style.display='block';renderQ();};
+function renderQ(){const cur=Q[qi];bar.style.width=(qi/Q.length*100)+'%';qcount.textContent=`Q ${qi+1} / ${Q.length}`;qtext.textContent=cur.q;opts.innerHTML='';
+  cur.o.forEach(([label,val])=>{const b=document.createElement('div');b.className='opt';b.textContent=label;
+    b.onclick=()=>{sum+=val;qi++;if(qi<Q.length)renderQ();else{qwrap.style.display='none';ageCard.style.display='block';}};opts.appendChild(b);});}
+
+document.getElementById('showBtn').onclick=()=>{
+  const v=document.getElementById('realAge').value;
+  real=(v!==""&&!isNaN(v))?parseInt(v):null;
+  let mental=Math.round(sum/Q.length);
+  // 少し散らす：極端な結果が出やすいよう軽く強調
+  mental=Math.max(5,Math.min(75,mental));
+  try{localStorage.setItem('mental_age_result',JSON.stringify({mental,real}));}catch(e){}
+  ageCard.style.display='none';showResult(mental,real);
+};
+
+function showResult(mental,real){
+  const p=persona(mental);
+  resultEl.style.display='block';resultEl.classList.add('reveal');
+  let gapHtml="";
+  let shareGap="";
+  if(real!==null){
+    const diff=mental-real;
+    if(diff<=-8){gapHtml=`実年齢より <b>${Math.abs(diff)}歳も若い</b> 心の持ち主！`;shareGap=`実年齢${real}歳なのに中身は${mental}歳…若すぎる😂`;}
+    else if(diff>=8){gapHtml=`実年齢より <b>${diff}歳も大人</b> な落ち着き…！`;shareGap=`実年齢${real}歳なのに中身は${mental}歳…老成しすぎ😌`;}
+    else{gapHtml=`実年齢（${real}歳）と <b>ほぼピッタリ</b>。バランス型！`;shareGap=`実年齢${real}歳、精神年齢${mental}歳でほぼ一致！`;}
+  }
+  const shareText=`私の精神年齢は【${mental}歳】${p.emoji}「${p.name}」でした！\n${shareGap?shareGap+"\n":""}あなたの本当の年齢は何歳?🎂 #精神年齢診断`;
+  const xUrl=`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText+"\n")}&url=${encodeURIComponent(SHARE_URL)}`;
+  const lineUrl=`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(SHARE_URL)}&text=${encodeURIComponent(shareText)}`;
+  resultEl.innerHTML=`
+    <div class="eyebrow" style="color:var(--p2)">YOUR MENTAL AGE</div>
+    <div style="font-size:3rem">${p.emoji}</div>
+    <div class="bignum">${mental}<small> 歳</small></div>
+    <div class="persona">「${p.name}」</div>
+    ${gapHtml?`<div class="gap">${gapHtml}</div>`:""}
+    <div class="rblock"><h3>🪞 あなたの中身</h3><p>${p.d}</p></div>
+    <div class="rblock"><h3>✨ ひとこと</h3><p>${p.pt}</p></div>
+    <div class="share-title">結果をシェアしよう（あなたは何歳だった?と聞いてみて🎂）</div>
+    <div class="shares">
+      <a class="share-btn sb-x" href="${xUrl}" target="_blank" rel="noopener">𝕏 でシェア</a>
+      <a class="share-btn sb-line" href="${lineUrl}" target="_blank" rel="noopener">LINEで送る</a>
+      <button class="share-btn sb-copy" id="copyBtn">🔗 リンクをコピー</button>
+    </div>
+    <div class="copied" id="copied">コピーしました！</div>
+    <div class="cta">🎁 <b>精神年齢タイプ別の「心を若く保つ習慣」＆セルフチェック</b>は、記事の特典ツールで。あなたのタイプ（${p.name}）で続きへ！</div>
+    <button class="retry" id="retryBtn">もう一度診断する</button>`;
+  document.getElementById('copyBtn').onclick=async()=>{const txt=shareText+"\n"+SHARE_URL;
+    try{await navigator.clipboard.writeText(txt);}catch(e){const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();}
+    const c=document.getElementById('copied');c.classList.add('show');setTimeout(()=>c.classList.remove('show'),1600);};
+  document.getElementById('retryBtn').onclick=()=>{qi=0;sum=0;real=null;document.getElementById('realAge').value="";
+    resultEl.style.display='none';resultEl.classList.remove('reveal');qwrap.style.display='block';renderQ();window.scrollTo({top:0,behavior:'smooth'});};
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* 星 */
+const cv=document.getElementById('stars'),cx=cv.getContext('2d');let st=[];
+function rs(){cv.width=innerWidth;cv.height=innerHeight;st=[];const n=Math.floor(innerWidth*innerHeight/9000);
+  for(let i=0;i<n;i++)st.push({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.4+.3,p:Math.random()*6,sp:Math.random()*.02+.005});}
+addEventListener('resize',rs);rs();
+function loop(){cx.clearRect(0,0,cv.width,cv.height);for(const s of st){s.p+=s.sp;const a=.35+Math.sin(s.p)*.35;
+  cx.beginPath();cx.arc(s.x,s.y,s.r,0,7);cx.fillStyle='rgba(200,190,255,'+a+')';cx.fill();}requestAnimationFrame(loop);}
+loop();
+</script>
+</body>
+</html>
